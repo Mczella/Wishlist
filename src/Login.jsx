@@ -1,124 +1,131 @@
-import React, { useContext, useState } from "react"
+import {
+    Button,
+    Checkbox,
+    Flex,
+    FormControl,
+    FormLabel,
+    Heading,
+    Input,
+    Link,
+    Stack,
+    Image,
+    InputRightElement,
+    InputGroup,
+    Box,
+    HStack,
+    Text,
+    useColorModeValue, FormErrorMessage,
+} from '@chakra-ui/react';
+import React, {useContext, useState} from "react"
 import "./styles/login.css"
-import { signInWithEmailAndPassword} from "firebase/auth"
-import { auth } from "./firebase"
-import { useNavigate } from "react-router-dom"
+import {signInWithEmailAndPassword} from "firebase/auth"
+import {auth} from "./firebase"
+import {useNavigate} from "react-router-dom"
 import {AuthorizationContext} from "./AuthorizationContext"
-import styled from '@emotion/styled'
-import logo from './img.jpeg'
-import {LoginForm} from "./styles/LoginForm"
-import RegisterUser from "./RegisterUser"
-
-
-
-const LoginStyle = styled.div`
-  width: 100vw;
-  height: 100vh;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: fixed;
-  background: darkgoldenrod;
- `
-
-
-const Content = styled.div`
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  line-height: 1.4;
-  background: #f1f1f1;
-  padding: 0px;
-  border-radius: 0.5rem;
-  width: 50%;
-  text-align: left;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  h1 {
-    font-size: xxx-large;
-    padding: 20px 20px 0px 20px;
-    margin-block-end: 0;
-  }
-  p {
-    font-size: large;
-    color: #282c34;
-    padding: 0px 20px 0px 20px;
-  }
- `
-const Image = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-bottom-right-radius: 0.5rem;
-  border-top-right-radius: 0.5rem;
- `
-
-const FormDiv = styled.div`
-  flex: 2;
- `
-
-
-const ImgDiv = styled.div`
-  flex: 1;
- `
+import {ViewIcon, ViewOffIcon} from '@chakra-ui/icons';
 
 
 const Login = () => {
     const [error, setError] = useState(false)
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-
+    const [showPassword, setShowPassword] = useState(false)
     const navigate = useNavigate()
     const {dispatch} = useContext(AuthorizationContext)
 
+    // add forgot password link
+
     const handleLogin = async (e) => {
         e.preventDefault()
-
+        // add option remember me
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password)
             const user = userCredential.user
-            dispatch({ type: "LOGIN", payload: user })
-            navigate("/")
+            dispatch({type: "LOGIN", payload: user})
+            navigate("/home")
         } catch (error) {
             setError(true)
             console.log(error)
         }
     }
-
     return (
-        <LoginStyle>
-            <Content>
-                <FormDiv>
-                    <h1>Vítejte!</h1>
-                    <p>Prosím přihlaste se nebo se zaregistrujte.</p>
-                    <LoginForm onSubmit={handleLogin}>
-                        <input
-                            type="email"
-                            placeholder="e-mail"
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <input
-                            type="password"
-                            placeholder="heslo"
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <button type="submit">Login</button>
-                        {error && <span>Špatný e-mail nebo heslo.</span>}
-                    </LoginForm>
+        <Flex
+            minH={'100vh'}
+            align={'center'}
+            justify={'center'}
+            bg={'gray.200'}>
+            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+                <Stack align={'center'}>
+                    <Heading fontSize={'4xl'} textAlign={'center'}>
+                        Přihlaste se
+                    </Heading>
+                    <Text fontSize={'lg'} color={'gray.600'}>
+                        a usnadněte si život
+                    </Text>
+                </Stack>
+                <Box
+                    rounded={'lg'}
+                    bg={'white'}
+                    boxShadow={'lg'}
+                    p={8}>
 
-                    <RegisterUser/>
+                    <form onSubmit={handleLogin}>
+                        <Stack spacing={4}>
 
-                </FormDiv>
-                <ImgDiv>
-                    <Image src={logo} alt="logo" />
-                </ImgDiv>
+                            <FormControl id="email">
+                                <FormLabel>E-mail</FormLabel>
+                                <Input
+                                    type="email"
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </FormControl>
 
-            </Content>
-        </LoginStyle>
-    )
+                            <FormControl id="password">
+                                <FormLabel>Heslo</FormLabel>
+                                <InputGroup>
+                                    <Input
+                                        type={showPassword ? 'text' : 'password'}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                    <FormErrorMessage>Zadejte heslo.</FormErrorMessage>
+                                    <InputRightElement h={'full'}>
+                                        <Button
+                                            variant={'ghost'}
+                                            onClick={() => setShowPassword((showPassword) => !showPassword)}
+                                        >
+                                            {showPassword ? <ViewIcon/> : <ViewOffIcon/>}
+                                        </Button>
+                                    </InputRightElement>
+                                </InputGroup>
+                            </FormControl>
+
+                            <Stack spacing={6}>
+                                <Stack
+                                    direction={{base: 'column', sm: 'row'}}
+                                    align={'start'}
+                                    justify={'space-between'}
+                                    pt={2}
+                                >
+                                    <Checkbox>Zapamatujte si mě.</Checkbox>
+                                    <Link color={'blue.500'}>Zapomněli jste heslo?</Link>
+                                </Stack>
+                                <Stack spacing={2} pt={2}>
+                                    <Button rounded={'full'}
+                                            colorScheme={'orange'}
+                                            bg={'orange.400'}
+                                            _hover={{bg: 'orange.500'}}
+                                            type="submit">
+                                        Přihlásit
+                                    </Button>
+                                    {error && <Text fontSize='xs' color='red'>Špatný e-mail nebo heslo.</Text>}
+                                </Stack>
+                            </Stack>
+                        </Stack>
+                    </form>
+                </Box>
+            </Stack>
+        </Flex>
+    );
 }
 
 export default Login
