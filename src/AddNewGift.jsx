@@ -1,7 +1,18 @@
-import React, {useEffect} from 'react'
-import {Form} from "./styles/Form";
-import {useForm} from "react-hook-form";
-import {addDoc, collection} from "firebase/firestore";
+import React, {useEffect, useState} from 'react'
+import {useForm} from "react-hook-form"
+import {handleAdd} from "./crud"
+import {
+    Button,
+    FormControl,
+    FormErrorMessage,
+    FormLabel,
+    Input,
+    Select,
+    Textarea,
+    Image,
+    Stack, Checkbox, CheckboxGroup
+} from "@chakra-ui/react";
+import {collection, onSnapshot} from "firebase/firestore";
 import {db} from "./firebase";
 
 
@@ -11,88 +22,132 @@ const AddNewGift = ({defaultValues}) => {
         handleSubmit,
         watch,
         reset,
-        formState: {errors}} = useForm();
+        formState: {errors}
+    } = useForm()
     const recipients = [{name: "xxx"}, {name: "yyy"}]
-    const imageUrl = watch('imageUrl');
+    const imageUrl = watch('imageUrl')
+    const [isLoading, setIsLoading] = useState(false)
+    const [addGiftError, setAddGiftError] = useState(false)
+    const [users, setUsers] = useState([])
+    const [checkedUsers, setCheckedUsers] = useState([])
+
+
+/*    const handleCheckboxChange = (e, userId) => {
+        const user = users.find((user) => user.id === userId)
+        const fullName = `${user.name} ${user.surname}`
+
+        if (e.target.checked && user) {
+
+            setCheckedUsers((prevCheckedUsers) => [...prevCheckedUsers, fullName])
+        } else if (!e.target.checked && user) {
+            const fullName = `${user.name} ${user.surname}`
+            setCheckedUsers((prevCheckedUsers) =>
+                prevCheckedUsers.filter((name) => name !== fullName)
+            )
+        }
+        setValues((prevValues) => ({
+            ...prevValues,
+            ["recipient"]: checkedUsers,
+        }))
+    }*/
+
+    useEffect(() => {
+        const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
+            setUsers(snapshot.docs.map((doc) => ({...doc.data(), id: doc.id})))
+        })
+
+        return () => unsubscribe()
+    }, [setUsers])
 
 
     const onSubmit = (data) => {
-        console.log(data);
+        setIsLoading(true)
+        console.log(data)
         const updatedData = {...data, buyer: "", creator: ""}
         console.log(updatedData)
-        addGift(updatedData)
-    }
-
-    const addGift = async (data) => {
-        const collectionRef = collection(db, "Gifts");
-        const docRef = await addDoc(collectionRef, data);
-        console.log("A new gift with this ID:" + docRef.id);
+        try {
+        handleAdd(updatedData, "Gifts")
+        } catch (error) {
+            setAddGiftError(true)
+            console.log(error)
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     const validateLink = (value) => {
         try {
-            new URL(value);
-            return true;
+            new URL(value)
+            return true
         } catch (error) {
-            return false;
+            return false
         }
-    };
+    }
 
     useEffect(() => {
-        // reset form with user data
-        reset(defaultValues);
-    }, [defaultValues]);
+        reset(defaultValues)
+    }, [defaultValues])
 
     return (
-        <div>
-            <Form onSubmit={handleSubmit(onSubmit)}>
-                <label>Název:</label>
-                <input {...register('name', {required: true})} />
-                {errors.name && <span>This field is required</span>}
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <FormControl id="name" isInvalid={errors.name}>
+                    <FormLabel>Název:</FormLabel>
+                    <Input {...register('name', {required: true})} />
+                    <FormErrorMessage>
+                        {errors.name && <span>This field is required</span>}
+                    </FormErrorMessage>
+                </FormControl>
 
-                <label>Obrázek:</label>
-                {imageUrl && (
-                    <img src={imageUrl} alt="Preview" style={{maxWidth: '100%', marginBottom: '1rem'}}/>
-                )}
-                <input type="text" {...register('imageUrl')} />
+                <FormControl id="imageUrl">
+                    <FormLabel>Obrázek:</FormLabel>
+                    {imageUrl && (
+                        <Image src={imageUrl} alt="Preview" style={{maxWidth: '100%', marginBottom: '1rem'}}/>
+                    )}
+                    <Input type="text" {...register('imageUrl')} />
+                </FormControl>
 
-                <label>Odkaz:</label>
-                <input
-                    {...register('link', {
-                        required: true,
-                        validate: (value) => validateLink(value)
-                    })}
-                />
-                {errors.link?.type === 'required' && <span>This field is required</span>}
-                {errors.link?.type === 'validate' && <span>Please enter a valid link</span>
-                }
+                <FormControl id="link" isInvalid={errors.link}>
+                    <FormLabel>Odkaz:</FormLabel>
+                    <Input
+                        {...register('link', {
+                            validate: (value) => validateLink(value)
+                        })}
+                    />
+                    <FormErrorMessage>
+                        {errors.link?.type === 'validate' && <span>Zadejte platný odkaz.</span>}
+                    </FormErrorMessage>
+                </FormControl>
 
-                <label>Pro koho:</label>
-                <select {...register('recipient', {required: true})}>
-                    <option value="" disabled>
-                        Choose recipient
-                    </option>
-                    {recipients.map((recipient) => (
-                        <option key={recipient.name} value={recipient.name}>
-                            {recipient.name}
-                        </option>
-                    ))}
-                </select>
-                {errors.recipient && <span>This field is required</span>}
+                    <FormControl id="recipient" isInvalid={errors.recipient}>
+                        <FormLabel>Pro koho:</FormLabel>
+                        <CheckboxGroup py={2} colorScheme='orange' name="recipient" defaultValue={gift.recipient}>
+                            <Stack spacing={[1]} direction={'column'}>
+                                {users.map((user) => (
+                                    <Checkbox fontSize="xs"
+                                              lineHeight="1"
+                                              color={'gray.600'}
+                                              key={user.id}
+                                              value={user.id}
+                                              checked={checkedUsers.includes(user.id)}
+                                              onChange={(e) => handleCheckboxChange(e, user.id)}>
+                                        {user.name} {user.surname}
+                                    </Checkbox>
+                                ))}
+                            </Stack>
+                            {/* onChange={handleInputChange} */}
+                        </CheckboxGroup>
+                        <FormErrorMessage>
+                            {errors.recipient && <span>This field is required</span>}
+                        </FormErrorMessage>
+                    </FormControl>
 
-                <label>Více informací:</label>
-                <textarea {...register('description')} />
+                    <FormControl id="description" isInvalid={errors.description}>
+                        <FormLabel>Více informací:</FormLabel>
+                        <Textarea {...register('description')} />
+                    </FormControl>
+                    <Button isLoading={isLoading} type="submit">Submit</Button>
+            </form>
+)
+}
 
-                <label>Cena:</label>
-                <input type="number" {...register('price', {required: true})} />
-                {errors.price && <span>This field is required</span>}
-
-                <div>
-                    <button type="submit">Submit</button>
-                </div>
-            </Form>
-        </div>
-    );
-};
-
-export default AddNewGift;
+export default AddNewGift
