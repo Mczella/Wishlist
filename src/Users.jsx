@@ -61,7 +61,6 @@ const Users = () => {
     return (
         <>
             <Button
-                className="button"
                 onClick={onCredentialsOpen}
             >
                 Přidat nového uživatele s přihlašovacími údaji.
@@ -74,7 +73,6 @@ const Users = () => {
                 </ModalContent>
             </Modal>
             <Button
-                className="button"
                 onClick={onSimpleOpen}
             >
                 Přidat nového neaktivního uživatele.
@@ -110,7 +108,7 @@ const Users = () => {
                                         </Heading>
                                         <Heading fontSize={'xl'} textAlign={'center'}>{editMode[user.id] ?
                                             <Input
-                                                name="surname"
+                                                name='surname'
                                                 defaultValue={user.surname}
                                                 onChange={handleInputChange}
                                             /> : user.surname}
@@ -124,7 +122,6 @@ const Users = () => {
                                                 colorScheme={'orange'}
                                                 bg={'orange.400'}
                                                 _hover={{bg: 'orange.500'}}
-                                                className="button"
                                                 onClick={() => {
                                                     handleEdit(user.id, "users", values);
                                                     handleEditClick(user.id)
@@ -134,7 +131,6 @@ const Users = () => {
                                             </Button> :
                                             <Button
                                                 rounded={'full'} px={6}
-                                                className="button"
                                                 onClick={() => handleEditClick(user.id)}
                                             >
                                                 Upravit
@@ -142,7 +138,6 @@ const Users = () => {
                                         }
                                         {/*add comfirmation popup*/}
                                         <Button
-                                            className="button"
                                             disabled={user.id === currentUID}
                                             onClick={() => {
                                                 handleDelete(user.id, "users")
