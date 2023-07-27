@@ -2,7 +2,7 @@ import {onSnapshot, collection} from "firebase/firestore"
 import React, {useContext, useEffect, useRef, useState} from "react"
 import {db} from "./firebase"
 import {doc} from "firebase/firestore"
-import {handleEdit} from "./crud"
+import {handleDelete, handleEdit} from "./Crud"
 import {AuthorizationContext} from "./AuthorizationContext"
 import {
     Box,
@@ -21,8 +21,9 @@ import {
     ModalCloseButton,
     Modal,
     ModalHeader,
-    ModalBody, ModalFooter, Checkbox, CheckboxGroup, Textarea, Center
+    ModalBody, ModalFooter, Checkbox, CheckboxGroup, Textarea, Center, IconButton, useDisclosure
 } from "@chakra-ui/react";
+import {CloseIcon, DeleteIcon} from "@chakra-ui/icons";
 
 
 const Gifts = () => {
@@ -31,7 +32,7 @@ const Gifts = () => {
     const [editMode, setEditMode] = useState({})
     const [values, setValues] = useState({})
     const currentUID = useContext(AuthorizationContext).currentUser.uid
-    const [giftError, setGiftGiftError] = useState(null)
+    const [giftError, setGiftError] = useState(null)
     const [openedModal, setOpenedModal] = useState(null)
     const btnRef = useRef(null)
     const [users, setUsers] = useState([])
@@ -72,7 +73,7 @@ const Gifts = () => {
                 buyer: `${user.name} ${user.surname}`,
             })
         } catch (error) {
-            setGiftGiftError(id)
+            setGiftError(id)
         }
     }
 
@@ -303,31 +304,54 @@ const Gifts = () => {
                                     </ModalBody>
                                     <ModalFooter>
                                         <ButtonGroup onClick={(e) => e.stopPropagation()} spacing='2'>
+                                        <ButtonGroup
+                                            onClick={(e) => e.stopPropagation()}
+                                            isAttached variant='outline'
+                                            >
                                             {editMode[gift.id] ? (
-                                                <Button
-                                                    rounded={'full'}
-                                                    onClick={() => {
-                                                        handleEdit(gift.id, "Gifts", values)
-                                                        handleEditClick(gift.id)
-                                                    }}
-                                                >
-                                                    Uložit
-                                                </Button>
+                                                <>
+                                                    <Button rounded={'full'}
+                                                            colorScheme={'orange'}
+                                                            disabled={true}
+                                                            onClick={() => {
+                                                                handleEdit(gift.id, "Gifts", values)
+                                                                handleEditClick(gift.id)
+                                                            }}>Uložit
+                                                    </Button>
+                                                    <IconButton rounded={'full'}
+                                                                aria-label='Zrušit'
+                                                                colorScheme={'orange'}
+                                                                _hover={{textColor: 'orange.500'}}
+                                                                onClick={() => {
+                                                                handleEditClick(gift.id)}}
+                                                                icon={<CloseIcon />} />
+                                                </>
                                             ) : (
-                                                <Button
-                                                    rounded={'full'}
-                                                    colorScheme={'orange'}
-                                                    bg={'orange.400'}
-                                                    _hover={{bg: 'orange.500'}}
-                                                    onClick={() => handleEditClick(gift.id)}
-                                                    disabled={!((gift.creator === `${user.name} ${user.surname}`) || user.admin)}
+                                                <Button rounded={'full'}
+                                                        colorScheme={'orange'}
+                                                        _hover={{textColor: 'orange.500'}}
+                                                        onClick={() => handleEditClick(gift.id)}
+                                                        disabled={!((gift.creator === `${user.name} ${user.surname}`) || user.admin)}
                                                 >
                                                     Upravit
                                                 </Button>
                                             )}
+                                        </ButtonGroup>
+                                            <IconButton rounded={'full'}
+                                                        variant={'ghost'}
+                                                        aria-label='Zrušit'
+                                                        colorScheme={'orange'}
+                                                        onClick={() => {
+                                                            handleDelete(gift.id, "Gifts")}}
+                                                        icon={<DeleteIcon />} />
+
                                             {gift.buyer === "" ? (
                                                 <Button
                                                     onClick={() => handleEditGift(gift.id, "Gifts")}
+                                                    rounded={'full'}
+                                                    colorScheme={'orange'}
+                                                    bg={'orange.400'}
+                                                    _hover={{bg: 'orange.500'}}
                                                 >
                                                     Koupit
                                                 </Button>
@@ -338,6 +362,10 @@ const Gifts = () => {
                                                             buyer: "",
                                                         })
                                                     }
+                                                    rounded={'full'}
+                                                    variant={'outline'}
+                                                    colorScheme={'orange'}
+                                                    _hover={{textColor: 'orange.500'}}
                                                 >
                                                     Vrátit koupi zpět
                                                 </Button>
@@ -353,7 +381,6 @@ const Gifts = () => {
                                             {giftError === gift.id &&
                                                 <span>Bohužel došlo k neočekávané chybě, zkuste to později.</span>}
                                             {/*Add delete gift*/}
-                                            <Button onClick={() => setOpenedModal(null)}>Close</Button>
                                         </ButtonGroup>
                                     </ModalFooter>
                                 </ModalContent>
