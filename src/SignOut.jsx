@@ -15,7 +15,7 @@ const SignOut = () => {
         try {
             await signOut(auth)
             dispatch({ type: "LOGOUT" })
-            navigate("/login")
+            navigate("/")
         } catch (error) {
             setError(true)
             console.log(error)
