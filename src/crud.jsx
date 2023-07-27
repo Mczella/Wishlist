@@ -4,7 +4,6 @@ import {db} from "./firebase"
 
 export const handleEdit = async (id, collection, values) => {
     const docRef = doc(db, collection, id)
-    try {
         const docSnap = await getDoc(docRef)
         console.log(docSnap.data())
         const docValues = docSnap.data()
@@ -12,9 +11,6 @@ export const handleEdit = async (id, collection, values) => {
         console.log("docValues", docValues)
         console.log("newValues", newValues)
         await setDoc(docRef, newValues)
-    } catch (error) {
-        console.log(error)
-    }
 }
 
 export const handleDelete = async (id, collection) => {
