@@ -21,9 +21,18 @@ import {
     ModalCloseButton,
     Modal,
     ModalHeader,
-    ModalBody, ModalFooter, Checkbox, CheckboxGroup, Textarea, Center, IconButton, useDisclosure
+    ModalBody,
+    ModalFooter,
+    Checkbox,
+    CheckboxGroup,
+    Textarea,
+    Center,
+    IconButton,
+    useDisclosure,
+    Skeleton,
+    MenuItemOption, MenuOptionGroup, MenuList, MenuButton, Menu, HStack, MenuDivider
 } from "@chakra-ui/react";
-import {CloseIcon, DeleteIcon} from "@chakra-ui/icons";
+import {CloseIcon, DeleteIcon, EditIcon} from "@chakra-ui/icons";
 
 
 const Gifts = () => {
@@ -37,6 +46,8 @@ const Gifts = () => {
     const btnRef = useRef(null)
     const [users, setUsers] = useState([])
     const [checkedUsers, setCheckedUsers] = useState([])
+    const [isLoaded, setIsLoaded] = useState(false)
+
 
 
     const handleCheckboxChange = (e, userId) => {
@@ -58,7 +69,7 @@ const Gifts = () => {
         }))
     }
 
-    console.log(checkedUsers)
+
     const handleInputChange = (e) => {
         const {name, value} = e.target
         setValues((prevValues) => ({
@@ -83,6 +94,10 @@ const Gifts = () => {
         })
         return () => unsubscribe()
     }, [setGifts])
+
+    useEffect(() => {
+        setIsLoaded(true)
+    }, [gifts])
 
     useEffect(() => {
         const unsubscribe = onSnapshot(doc(db, "users", currentUID), (querySnapshot) => {
@@ -110,12 +125,64 @@ const Gifts = () => {
             [itemId]: !prevEditMode[itemId],
         }))
     }
-    console.log(users)
+
 
     return (
-        <div>
+        <>
+            <HStack justifyContent={'flex-end'}>
+            <Menu closeOnSelect={true}>
+                <MenuButton
+                    px={4}
+                    py={2}
+                    transition='all 0.2s'
+                    borderRadius='md'
+                    borderWidth='1px'
+                    _hover={{ bg: 'gray.400' }}
+                    _expanded={{ bg: 'blue.400' }}
+                    _focus={{ boxShadow: 'outline' }}
+                >
+                    Filtrovat
+                </MenuButton>
+                <MenuList minWidth='240px'>
+                    <MenuOptionGroup defaultValue='asc' title='Filtrovat' type='radio'>
+                        <MenuItemOption value='buyer'>Dle kupce</MenuItemOption>
+                        <MenuItemOption value='creator'>Dle zadavatele</MenuItemOption>
+                        <MenuItemOption value='recipient'>Dle obdarovávaného</MenuItemOption>
+                        <MenuItemOption value='availibility'>Dle dostupnosti</MenuItemOption>
+                    </MenuOptionGroup>
+                    <MenuDivider />
+                    <MenuOptionGroup defaultValue='asc' title='Order' type='radio'>
+                        {users.map((user) => (
+                            <MenuItemOption key={user.id} value={user.id}>
+                                {user.name} {user.surname}
+                            </MenuItemOption>))}
+                    </MenuOptionGroup>
+                </MenuList>
+            </Menu>
+            <Menu>
+                <MenuButton
+                    px={4}
+                    py={2}
+                    transition='all 0.2s'
+                    borderRadius='md'
+                    borderWidth='1px'
+                    _hover={{ bg: 'gray.400' }}
+                    _expanded={{ bg: 'blue.400' }}
+                    _focus={{ boxShadow: 'outline' }}
+                >
+                    Seřadit
+                </MenuButton>
+                <MenuList minWidth='240px'>
+                    <MenuOptionGroup defaultValue='asc' title='Seřadit' type='radio'>
+                        <MenuItemOption value='asc'>Dle názvu vzestupně</MenuItemOption>
+                        <MenuItemOption value='desc'>Dle názvu sestupně</MenuItemOption>
+                    </MenuOptionGroup>
+                </MenuList>
+            </Menu>
+            </HStack>
             <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(300px, 1fr))'>
                 {gifts.map((gift) => (
+                    <Skeleton isLoaded={isLoaded} >
                     <Box
                         maxW='sm' borderWidth='1px'
                         rounded={'md'}
@@ -130,13 +197,13 @@ const Gifts = () => {
 
                     >
                         <>
-                                <Image
-                                    objectFit='contain'
-                                    boxSize='200px'
-                                    display='initial'
-                                    src={gift.imageUrl || "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="}
-                                    alt={gift.imageUrl ? gift.name : "thumbnail"}
-                                />
+                            <Image
+                                objectFit='contain'
+                                boxSize='200px'
+                                display='initial'
+                                src={gift.imageUrl || "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="}
+                                alt={gift.imageUrl ? gift.name : "thumbnail"}
+                            />
 
                             <Box p='6'>
                                 <Box mt='1' fontWeight='semibold' lineHeight='tight' height={12} noOfLines={2}>
@@ -214,21 +281,21 @@ const Gifts = () => {
                                         <>
                                             {editMode[gift.id] ? (
                                                 <Box p='6'>
-                                                <Input
-                                                    name="imageUrl"
-                                                    defaultValue={gift.imageUrl || "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="}
-                                                    onChange={handleInputChange}
-                                                />
+                                                    <Input
+                                                        name="imageUrl"
+                                                        defaultValue={gift.imageUrl || "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="}
+                                                        onChange={handleInputChange}
+                                                    />
                                                 </Box>
                                             ) : (
                                                 <Center>
-                                                <Image
-                                                    objectFit='contain'
-                                                    boxSize='200px'
-                                                    display='initial'
-                                                    src={gift.imageUrl || "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="}
-                                                    alt={gift.imageUrl ? gift.name : "thumbnail"}
-                                                />
+                                                    <Image
+                                                        objectFit='contain'
+                                                        boxSize='200px'
+                                                        display='initial'
+                                                        src={gift.imageUrl || "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="}
+                                                        alt={gift.imageUrl ? gift.name : "thumbnail"}
+                                                    />
                                                 </Center>
                                             )}
                                             <Box p='6'>
@@ -267,31 +334,32 @@ const Gifts = () => {
                                                 </Box>
                                                 <Divider/>
                                                 <Box>
-                                                    <Text  pb={2} fontSize={'md'} color={'gray.600'}>
+                                                    <Text pb={2} fontSize={'md'} color={'gray.600'}>
                                                         Pro:
 
 
-                                                    {editMode[gift.id] ? (
-                                                        <CheckboxGroup py={2} colorScheme='orange' name="recipient" defaultValue={gift.recipient}>
-                                                            <Stack spacing={[1]} direction={'column'}>
-                                                                {users.map((user) => (
-                                                                    <Checkbox fontSize="xs"
-                                                                              lineHeight="1"
-                                                                              color={'gray.600'}
-                                                                              key={user.id}
-                                                                              value={user.id}
-                                                                              checked={checkedUsers.includes(user.id)}
-                                                                              onChange={(e) => handleCheckboxChange(e, user.id)}>
-                                                                        {user.name} {user.surname}
-                                                                    </Checkbox>
-                                                                ))}
-                                                            </Stack>
-                                                            {/* onChange={handleInputChange} */}
-                                                        </CheckboxGroup>
-                                                    ) : (
+                                                        {editMode[gift.id] ? (
+                                                            <CheckboxGroup py={2} colorScheme='orange' name="recipient"
+                                                                           defaultValue={gift.recipient}>
+                                                                <Stack spacing={[1]} direction={'column'}>
+                                                                    {users.map((user) => (
+                                                                        <Checkbox fontSize="xs"
+                                                                                  lineHeight="1"
+                                                                                  color={'gray.600'}
+                                                                                  key={user.id}
+                                                                                  value={user.id}
+                                                                                  checked={checkedUsers.includes(user.id)}
+                                                                                  onChange={(e) => handleCheckboxChange(e, user.id)}>
+                                                                            {user.name} {user.surname}
+                                                                        </Checkbox>
+                                                                    ))}
+                                                                </Stack>
+                                                                {/* onChange={handleInputChange} */}
+                                                            </CheckboxGroup>
+                                                        ) : (
 
                                                             gift.recipient
-                                                    )}
+                                                        )}
 
                                                     </Text>
                                                 </Box>
@@ -304,46 +372,48 @@ const Gifts = () => {
                                     </ModalBody>
                                     <ModalFooter>
                                         <ButtonGroup onClick={(e) => e.stopPropagation()} spacing='2'>
-                                        <ButtonGroup
-                                            onClick={(e) => e.stopPropagation()}
-                                            isAttached variant='outline'
+                                            <ButtonGroup
+                                                onClick={(e) => e.stopPropagation()}
+                                                isAttached variant='outline'
                                             >
-                                            {editMode[gift.id] ? (
-                                                <>
-                                                    <Button rounded={'full'}
-                                                            colorScheme={'orange'}
-                                                            disabled={true}
-                                                            onClick={() => {
-                                                                handleEdit(gift.id, "Gifts", values)
-                                                                handleEditClick(gift.id)
-                                                            }}>Uložit
-                                                    </Button>
-                                                    <IconButton rounded={'full'}
-                                                                aria-label='Zrušit'
+                                                {editMode[gift.id] ? (
+                                                    <>
+                                                        <Button rounded={'full'}
                                                                 colorScheme={'orange'}
-                                                                _hover={{textColor: 'orange.500'}}
+                                                                disabled={true}
                                                                 onClick={() => {
-                                                                handleEditClick(gift.id)}}
-                                                                icon={<CloseIcon />} />
-                                                </>
-                                            ) : (
-                                                <Button rounded={'full'}
-                                                        colorScheme={'orange'}
-                                                        _hover={{textColor: 'orange.500'}}
-                                                        onClick={() => handleEditClick(gift.id)}
-                                                        disabled={!((gift.creator === `${user.name} ${user.surname}`) || user.admin)}
-                                                >
-                                                    Upravit
-                                                </Button>
-                                            )}
-                                        </ButtonGroup>
+                                                                    handleEdit(gift.id, "Gifts", values)
+                                                                    handleEditClick(gift.id)
+                                                                }}>Uložit
+                                                        </Button>
+                                                        <IconButton rounded={'full'}
+                                                                    aria-label='Zrušit'
+                                                                    colorScheme={'orange'}
+                                                                    _hover={{textColor: 'orange.500'}}
+                                                                    onClick={() => {
+                                                                        handleEditClick(gift.id)
+                                                                    }}
+                                                                    icon={<CloseIcon/>}/>
+                                                    </>
+                                                ) : (
+                                                    <IconButton rounded={'full'}
+                                                            colorScheme={'orange'}
+                                                            _hover={{textColor: 'orange.500'}}
+                                                            onClick={() => handleEditClick(gift.id)}
+                                                            disabled={!((gift.creator === `${user.name} ${user.surname}`) || user.admin)}
+                                                                icon={<EditIcon/>}/>
+
+
+                                                )}
+                                            </ButtonGroup>
                                             <IconButton rounded={'full'}
                                                         variant={'ghost'}
                                                         aria-label='Zrušit'
                                                         colorScheme={'orange'}
                                                         onClick={() => {
-                                                            handleDelete(gift.id, "Gifts")}}
-                                                        icon={<DeleteIcon />} />
+                                                            handleDelete(gift.id, "Gifts")
+                                                        }}
+                                                        icon={<DeleteIcon/>}/>
 
                                             {gift.buyer === "" ? (
                                                 <Button
@@ -387,9 +457,10 @@ const Gifts = () => {
                             </Modal>
                         </>
                     </Box>
+                    </Skeleton>
                 ))}
             </SimpleGrid>
-        </div>
+        </>
     )
 }
 
