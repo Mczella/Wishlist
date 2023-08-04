@@ -31,7 +31,7 @@ const Login = () => {
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
     const navigate = useNavigate()
-    const {dispatch} = useContext(AuthorizationContext)
+    const {dispatch, rememberMe, setRememberMe} = useContext(AuthorizationContext)
 
     // add forgot password link
 
@@ -41,6 +41,13 @@ const Login = () => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password)
             const user = userCredential.user
+
+            if (rememberMe) {
+                localStorage.setItem("user", JSON.stringify(user))
+            } else {
+                sessionStorage.setItem("user", JSON.stringify(user))
+            }
+
             dispatch({type: "LOGIN", payload: user})
             navigate("/home")
         } catch (error) {
@@ -106,7 +113,12 @@ const Login = () => {
                                     justify={'space-between'}
                                     pt={2}
                                 >
-                                    <Checkbox>Zapamatujte si mě.</Checkbox>
+                                    <Checkbox
+                                        checked={rememberMe}
+                                        onChange={() => setRememberMe(!rememberMe)}
+                                    >
+                                        Zapamatujte si mě.
+                                    </Checkbox>
                                     <Link color={'blue.500'}>Zapomněli jste heslo?</Link>
                                 </Stack>
                                 <Stack spacing={2} pt={2}>
