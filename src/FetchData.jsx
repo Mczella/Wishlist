@@ -112,7 +112,7 @@ const FetchData = () => {
                 <ModalOverlay />
                 <ModalContent bg={'gray.200'}>
                     <ModalHeader>
-                        <Heading fontSize={'4xl'} textAlign={'center'} mt={8} mb={4}>
+                        <Heading fontSize={'2xl'} textAlign={'center'} mt={4} mb={2}>
                             Přidejte nový dárek
                         </Heading>
                     </ModalHeader>
