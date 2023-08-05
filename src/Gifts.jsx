@@ -1,36 +1,15 @@
 import {onSnapshot, collection} from "firebase/firestore"
-import React, {useContext, useEffect, useRef, useState} from "react"
+import React, {useEffect, useState} from "react"
 import {db} from "./firebase"
-import {doc} from "firebase/firestore"
-import {handleDelete, handleEdit} from "./Crud"
-import {AuthorizationContext} from "./AuthorizationContext"
 import {
-    Box,
-    Button,
-    Input,
     SimpleGrid,
-    Text,
-    Stack,
-    Image,
-    Link,
-    Divider,
-    Badge,
-    ButtonGroup,
-    ModalOverlay,
-    ModalContent,
-    ModalCloseButton,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Checkbox,
-    CheckboxGroup,
-    Textarea,
-    Center,
-    IconButton,
-    useDisclosure,
-    Skeleton,
-    MenuItemOption, MenuOptionGroup, MenuList, MenuButton, Menu, HStack, MenuDivider
+    MenuItemOption,
+    MenuOptionGroup,
+    MenuList,
+    MenuButton,
+    Menu,
+    HStack,
+    MenuDivider
 } from "@chakra-ui/react";
 import GiftList from "./GiftList";
 
@@ -100,9 +79,9 @@ const Gifts = () => {
                     transition='all 0.2s'
                     borderRadius='md'
                     borderWidth='1px'
-                    _hover={{ bg: 'gray.200' }}
-                    _expanded={{ bg: 'grey.200' }}
-                    _focus={{ boxShadow: 'outline' }}
+                    _hover={{bg: 'gray.200'}}
+                    _expanded={{bg: 'grey.200'}}
+                    _focus={{boxShadow: 'outline'}}
                 >
                     Seřadit
                 </MenuButton>
