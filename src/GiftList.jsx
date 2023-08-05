@@ -113,27 +113,31 @@ const GiftList = ({gifts, users, isLoaded}) => {
                                 <Box align={"right"}>
                                     {gift.buyer === "" ? (
                                         <Button
-                                            rounded={'full'}
+                                            rounded={'lg'}
                                             colorScheme={'orange'}
                                             bg={'orange.400'}
                                             _hover={{bg: 'orange.500'}}
-                                            onClick={() => handleEditGift(gift.id, "Gifts", {
-                                                buyer: `${user.name} ${user.surname}`
-                                            })}
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                handleEditGift(gift.id, "Gifts", {
+                                                    buyer: `${user.name} ${user.surname}`
+                                                })
+                                            }}
                                         >
                                             Koupit
                                         </Button>
                                     ) : gift.buyer === `${user.name} ${user.surname}` ? (
                                         <Button
-                                            rounded={'full'}
+                                            rounded={'lg'}
                                             variant={'outline'}
                                             colorScheme={'orange'}
                                             _hover={{textColor: 'orange.500'}}
-                                            onClick={() =>
+                                            onClick={(e) => {
+                                                e.stopPropagation()
                                                 handleEditGift(gift.id, "Gifts", {
                                                     buyer: "",
                                                 })
-                                            }
+                                            }}
                                         >
                                             Vrátit koupi zpět
                                         </Button>
@@ -146,6 +150,8 @@ const GiftList = ({gifts, users, isLoaded}) => {
                                             Koupeno
                                         </Button>
                                     )}
+                                     {giftError === gift.id &&
+                                         <Text fontSize='xs' color='red'>Bohužel došlo k neočekávané chybě, zkuste to později.</Text>}
                                 </Box>
                             </Box>
                             <GiftDetailModal gift={gift} btnRef={btnRef} user={user} users={users} onClose={() => setOpenedModal(null)} isOpen={openedModal === gift.id} handleEditGift={handleEditGift}/>
