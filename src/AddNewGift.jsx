@@ -1,22 +1,23 @@
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {useForm} from "react-hook-form"
-import {handleAdd} from "./crud"
+import {handleAdd} from "./Crud"
 import {
     Button,
     FormControl,
     FormErrorMessage,
     FormLabel,
     Input,
-    Select,
     Textarea,
     Image,
-    Stack, Checkbox, CheckboxGroup
+    Stack
 } from "@chakra-ui/react";
-import {collection, onSnapshot} from "firebase/firestore";
+import {collection, onSnapshot} from "firebase/firestore"
 import {db} from "./firebase";
+import {AuthorizationContext} from "./AuthorizationContext"
+import {Select} from "chakra-react-select"
 
 
-const AddNewGift = ({defaultValues}) => {
+const AddNewGift = ({defaultValues, onClose}) => {
     const {
         register,
         handleSubmit,
@@ -24,32 +25,17 @@ const AddNewGift = ({defaultValues}) => {
         reset,
         formState: {errors}
     } = useForm()
-    const recipients = [{name: "xxx"}, {name: "yyy"}]
     const imageUrl = watch('imageUrl')
     const [isLoading, setIsLoading] = useState(false)
     const [addGiftError, setAddGiftError] = useState(false)
     const [users, setUsers] = useState([])
-    const [checkedUsers, setCheckedUsers] = useState([])
+    const currentUID = useContext(AuthorizationContext).currentUser.uid
+    const [currentUser, setCurrentUser] = useState(null)
+    const userOptions = users.map((user) => ({
+        value: user.id,
+        label: `${user.name} ${user.surname}`,
+    }))
 
-
-/*    const handleCheckboxChange = (e, userId) => {
-        const user = users.find((user) => user.id === userId)
-        const fullName = `${user.name} ${user.surname}`
-
-        if (e.target.checked && user) {
-
-            setCheckedUsers((prevCheckedUsers) => [...prevCheckedUsers, fullName])
-        } else if (!e.target.checked && user) {
-            const fullName = `${user.name} ${user.surname}`
-            setCheckedUsers((prevCheckedUsers) =>
-                prevCheckedUsers.filter((name) => name !== fullName)
-            )
-        }
-        setValues((prevValues) => ({
-            ...prevValues,
-            ["recipient"]: checkedUsers,
-        }))
-    }*/
 
     useEffect(() => {
         const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
@@ -59,19 +45,31 @@ const AddNewGift = ({defaultValues}) => {
         return () => unsubscribe()
     }, [setUsers])
 
+    useEffect(() => {
+        const user = users.find((user) => user.id === currentUID)
+        setCurrentUser(user)
+    }, [currentUID, users])
 
     const onSubmit = (data) => {
         setIsLoading(true)
         console.log(data)
-        const updatedData = {...data, buyer: "", creator: ""}
+        const updatedData = {
+            ...data,
+            // recipient: checkedUsers,
+            buyer: "",
+            creator: `${currentUser.name} ${currentUser.surname}`
+        }
         console.log(updatedData)
         try {
-        handleAdd(updatedData, "Gifts")
+            handleAdd(updatedData, "Gifts")
         } catch (error) {
             setAddGiftError(true)
             console.log(error)
         } finally {
             setIsLoading(false)
+            if (!addGiftError) {
+                onClose()
+            }
         }
     }
 
@@ -89,12 +87,15 @@ const AddNewGift = ({defaultValues}) => {
     }, [defaultValues])
 
     return (
-            <form onSubmit={handleSubmit(onSubmit)}>
+
+        // add reset after successfully submitting
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <Stack spacing={4}>
                 <FormControl id="name" isInvalid={errors.name}>
                     <FormLabel>Název:</FormLabel>
                     <Input {...register('name', {required: true})} />
                     <FormErrorMessage>
-                        {errors.name && <span>This field is required</span>}
+                        {errors.name && <span>Zadejte název.</span>}
                     </FormErrorMessage>
                 </FormControl>
 
@@ -118,36 +119,48 @@ const AddNewGift = ({defaultValues}) => {
                     </FormErrorMessage>
                 </FormControl>
 
-                    <FormControl id="recipient" isInvalid={errors.recipient}>
-                        <FormLabel>Pro koho:</FormLabel>
-                        <CheckboxGroup py={2} colorScheme='orange' name="recipient" defaultValue={gift.recipient}>
-                            <Stack spacing={[1]} direction={'column'}>
-                                {users.map((user) => (
-                                    <Checkbox fontSize="xs"
-                                              lineHeight="1"
-                                              color={'gray.600'}
-                                              key={user.id}
-                                              value={user.id}
-                                              checked={checkedUsers.includes(user.id)}
-                                              onChange={(e) => handleCheckboxChange(e, user.id)}>
-                                        {user.name} {user.surname}
-                                    </Checkbox>
-                                ))}
-                            </Stack>
-                            {/* onChange={handleInputChange} */}
-                        </CheckboxGroup>
-                        <FormErrorMessage>
-                            {errors.recipient && <span>This field is required</span>}
-                        </FormErrorMessage>
-                    </FormControl>
+                <FormControl id="recipient" isInvalid={errors.recipient}>
+                    <FormLabel>Pro koho:</FormLabel>
+                    <Select
+                        colorScheme="orange"
+                        focusBorderColor="orange.400"
+                        isMulti
+                        name="recipient"
+                        options={userOptions}
+                        placeholder="Vyberte, pro koho je dárek..."
+                        variant="outline"
+                        useBasicStyles
+                        selectedOptionStyle="check"
+                    />
+                    <FormErrorMessage>
+                        {errors.recipient && <span>Vyberte pro koho je tento dárek.</span>}
+                    </FormErrorMessage>
+                </FormControl>
 
-                    <FormControl id="description" isInvalid={errors.description}>
-                        <FormLabel>Více informací:</FormLabel>
-                        <Textarea {...register('description')} />
-                    </FormControl>
-                    <Button isLoading={isLoading} type="submit">Submit</Button>
-            </form>
-)
+                <FormControl id="description" isInvalid={errors.description}>
+                    <FormLabel>Více informací:</FormLabel>
+                    <Textarea {...register('description')} />
+                </FormControl>
+                <Stack spacing={6}>
+                    <Stack spacing={2} pt={2}>
+                        <Button isLoading={isLoading}
+                                rounded={'lg'}
+                                colorScheme={'orange'}
+                                bg={'orange.400'}
+                                _hover={{bg: 'orange.500'}}
+                                type="submit">
+                            Přidat dárek
+                        </Button>
+                        <FormErrorMessage>
+                            {addGiftError && <span>Při vytváření dárku došlo k chybě. Zkuste to prosím znovu.</span>}
+                        </FormErrorMessage>
+                    </Stack>
+                </Stack>
+
+            </Stack>
+        </form>
+
+    )
 }
 
 export default AddNewGift
