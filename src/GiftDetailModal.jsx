@@ -32,8 +32,20 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
     const cancelRef = useRef()
 
 
+    const handleSelectChange = (e) => {
+        const recipients = e.map(item => ({
+            recipient: item,
+            label: item.label,
+            value: item.value
+        }));
+        setValues((prevValues) => ({
+            ...prevValues,
+            recipient: recipients.map(item => item.label)
+        }));
+
+    }
+
     const handleInputChange = (e) => {
-        console.log(e)
         const {name, value} = e.target
         setValues((prevValues) => ({
             ...prevValues,
@@ -147,7 +159,7 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                                                 variant="outline"
                                                 useBasicStyles
                                                 selectedOptionStyle="check"
-                                                onChange={handleInputChange}
+                                                onChange={handleSelectChange}
                                             />
                                         </FormControl>
 
