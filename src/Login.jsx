@@ -8,13 +8,11 @@ import {
     Input,
     Link,
     Stack,
-    Image,
     InputRightElement,
     InputGroup,
     Box,
-    HStack,
     Text,
-    useColorModeValue, FormErrorMessage,
+    FormErrorMessage,
 } from '@chakra-ui/react';
 import React, {useContext, useState} from "react"
 import "./styles/login.css"
@@ -122,7 +120,7 @@ const Login = () => {
                                     <Link color={'blue.500'}>Zapomněli jste heslo?</Link>
                                 </Stack>
                                 <Stack spacing={2} pt={2}>
-                                    <Button rounded={'full'}
+                                    <Button rounded={'lg'}
                                             colorScheme={'orange'}
                                             bg={'orange.400'}
                                             _hover={{bg: 'orange.500'}}
