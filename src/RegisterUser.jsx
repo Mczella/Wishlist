@@ -23,7 +23,7 @@ import {
 import {ViewIcon, ViewOffIcon} from "@chakra-ui/icons";
 
 
-const RegisterUser = ({variant}) => {
+const RegisterUser = ({variant, onCredentialsClose}) => {
     const {
         register,
         handleSubmit,
@@ -35,13 +35,16 @@ const RegisterUser = ({variant}) => {
     const [error, setError] = useState(false)
     const location = useLocation()
     const [showPassword, setShowPassword] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
 
     const createUser = async (data) => {
+        setIsLoading(true)
         try {
             const newUser = await createUserWithEmailAndPassword(auth, data.email, data.password, data.name)
             const user = newUser.user
             if (location.pathname === "/signup") {
+                sessionStorage.setItem("user", JSON.stringify(user))
                 dispatch({type: "LOGIN", payload: user})
                 navigate("/home")
                 console.log(data)
@@ -63,23 +66,32 @@ const RegisterUser = ({variant}) => {
         } catch (error) {
             setError(true)
             console.log(error)
+        } finally {
+            setIsLoading(false)
+            if (variant === "modal" && !error) {
+                onCredentialsClose()
+            }
         }
     }
 
 
     return (
         <Flex
-            minH={variant==="modal"? "0" : '100vh'}
-            align={variant==="modal"? 'baseline':'center'}
+            minH={variant === "modal" ? "0" : '100vh'}
+            align={variant === "modal" ? 'baseline' : 'center'}
             justify={'center'}
             bg={'gray.200'}>
-            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+            <Stack spacing={8}
+                   mx={'auto'}
+                   maxW={'lg'}
+                   py={variant === 'modal' ? '2' : '12'}
+                   px={6}>
                 <Stack align={'center'}>
                     <Heading fontSize={'4xl'} textAlign={'center'}>
-                        Vytvořte si účet
+                        {variant === "modal" ? 'Přidejte nového uživatele' : 'Vytvořte si účet'}
                     </Heading>
                     <Text fontSize={'lg'} color={'gray.600'}>
-                        a ušetřete čas i nervy.
+                        {variant === "modal" ? 'a vytvořte mu přistupové údaje' : 'a ušetřete čas i nervy.'}
                     </Text>
                 </Stack>
                 <Box
@@ -171,7 +183,7 @@ const RegisterUser = ({variant}) => {
                             <Stack spacing={4}>
                                 <HStack>
                                     <Box>
-                                        <FormControl id="name" isRequired>
+                                        <FormControl id="name" isInvalid={errors.name}>
                                             <FormLabel>Jméno</FormLabel>
                                             <Input
                                                 name="name"
@@ -185,7 +197,7 @@ const RegisterUser = ({variant}) => {
                                         </FormControl>
                                     </Box>
                                     <Box>
-                                        <FormControl id="surname" isRequired>
+                                        <FormControl id="surname" isInvalid={errors.surname}>
                                             <FormLabel>Příjmení</FormLabel>
                                             <Input
                                                 name="surname"
@@ -199,11 +211,10 @@ const RegisterUser = ({variant}) => {
                                         </FormControl>
                                     </Box>
                                 </HStack>
-
-
                                 <Stack spacing={6}>
                                     <Stack spacing={2} pt={2}>
-                                        <Button rounded={'full'}
+                                        <Button isLoading={isLoading}
+                                                rounded={'lg'}
                                                 colorScheme={'orange'}
                                                 bg={'orange.400'}
                                                 _hover={{bg: 'orange.500'}}
@@ -212,14 +223,13 @@ const RegisterUser = ({variant}) => {
                                         </Button>
                                         {error &&
                                             <Text fontSize='xs' color='red'>
-                                                Při vytváření uživatelského účtu došlo k erroru. Zkuste to prosím znovu.
+                                                Při vytváření uživatelského účtu došlo k chybě. Zkuste to prosím znovu.
                                             </Text>}
                                     </Stack>
                                 </Stack>
                             </Stack>
                         </Stack>
                     </form>
-
                 </Box>
             </Stack>
         </Flex>
