@@ -31,24 +31,6 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
     const { isOpen: isAlertOpen, onOpen, onClose: onAlertClose } = useDisclosure()
     const cancelRef = useRef()
 
-    const handleCheckboxChange = (e, userId) => {
-        const chosenUser = users.find((user) => user.id === userId)
-        const fullName = `${chosenUser.name} ${chosenUser.surname}`
-
-        if (e.target.checked && chosenUser) {
-
-            setCheckedUsers((prevCheckedUsers) => [...prevCheckedUsers, fullName])
-        } else if (!e.target.checked && chosenUser) {
-            setCheckedUsers((prevCheckedUsers) =>
-                prevCheckedUsers.filter((name) => name !== fullName)
-            )
-        }
-        setValues((prevValues) => ({
-            ...prevValues,
-            ["recipient"]: checkedUsers,
-        }))
-    }
-
 
     const handleInputChange = (e) => {
         const {name, value} = e.target
@@ -168,14 +150,13 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                     </>
                 </ModalBody>
                 <ModalFooter>
-                    <ButtonGroup onClick={(e) => e.stopPropagation()} spacing='2'>
+                    <ButtonGroup spacing='2'>
                         <ButtonGroup
-                            onClick={(e) => e.stopPropagation()}
                             isAttached variant='outline'
                         >
                             {editMode[gift.id] ? (
                                 <>
-                                    <Button rounded={'full'}
+                                    <Button rounded={'lg'}
                                             colorScheme={'orange'}
                                             disabled={true}
                                             onClick={() => {
@@ -183,7 +164,7 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                                                 handleEditClick(gift.id)
                                             }}>Uložit
                                     </Button>
-                                    <IconButton rounded={'full'}
+                                    <IconButton rounded={'lg'}
                                                 aria-label='Zrušit'
                                                 colorScheme={'orange'}
                                                 _hover={{textColor: 'orange.500'}}
@@ -193,15 +174,17 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                                                 icon={<CloseIcon/>}/>
                                 </>
                             ) : (
-                                <IconButton rounded={'full'}
+                                <Button rounded={'lg'}
                                             colorScheme={'orange'}
                                             _hover={{textColor: 'orange.500'}}
                                             onClick={() => handleEditClick(gift.id)}
                                             disabled={!((gift.creator === `${user.name} ${user.surname}`) || user.admin)}
-                                            icon={<EditIcon/>}/>
+                                            >
+                                    Upravit
+                                </Button>
                             )}
                         </ButtonGroup>
-                        <IconButton rounded={'full'}
+                        <IconButton rounded={'lg'}
                                     variant={'ghost'}
                                     aria-label='Zrušit'
                                     colorScheme={'orange'}
@@ -210,8 +193,10 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
 
                         {gift.buyer === "" ? (
                             <Button
-                                onClick={() => handleEditGift(gift.id, "Gifts")}
-                                rounded={'full'}
+                                onClick={() => handleEditGift(gift.id, "Gifts", {
+                                    buyer: `${user.name} ${user.surname}`
+                                })}
+                                rounded={'lg'}
                                 colorScheme={'orange'}
                                 bg={'orange.400'}
                                 _hover={{bg: 'orange.500'}}
@@ -225,7 +210,7 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                                         buyer: "",
                                     })
                                 }
-                                rounded={'full'}
+                                rounded={'lg'}
                                 variant={'outline'}
                                 colorScheme={'orange'}
                                 _hover={{textColor: 'orange.500'}}
