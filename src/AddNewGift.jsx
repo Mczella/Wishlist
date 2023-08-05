@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react'
-import {useForm} from "react-hook-form"
+import {Controller, useForm} from "react-hook-form"
 import {handleAdd} from "./Crud"
 import {
     Button,
@@ -23,6 +23,7 @@ const AddNewGift = ({defaultValues, onClose}) => {
         handleSubmit,
         watch,
         reset,
+        control,
         formState: {errors}
     } = useForm()
     const imageUrl = watch('imageUrl')
@@ -55,7 +56,7 @@ const AddNewGift = ({defaultValues, onClose}) => {
         console.log(data)
         const updatedData = {
             ...data,
-            // recipient: checkedUsers,
+            recipient: data.recipient.map((recipient) => recipient.label),
             buyer: "",
             creator: `${currentUser.name} ${currentUser.surname}`
         }
@@ -121,16 +122,19 @@ const AddNewGift = ({defaultValues, onClose}) => {
 
                 <FormControl id="recipient" isInvalid={errors.recipient}>
                     <FormLabel>Pro koho:</FormLabel>
-                    <Select
-                        colorScheme="orange"
-                        focusBorderColor="orange.400"
-                        isMulti
-                        name="recipient"
-                        options={userOptions}
-                        placeholder="Vyberte, pro koho je dárek..."
-                        variant="outline"
-                        useBasicStyles
-                        selectedOptionStyle="check"
+                    <Controller control={control} render={({field}) => (
+                        <Select
+                            {...field}
+                            colorScheme="orange"
+                            focusBorderColor="orange.400"
+                            isMulti
+                            options={userOptions}
+                            placeholder="Vyberte, pro koho je dárek..."
+                            variant="outline"
+                            useBasicStyles
+                            selectedOptionStyle="check"
+                        />
+                    )} name={"recipient"}
                     />
                     <FormErrorMessage>
                         {errors.recipient && <span>Vyberte pro koho je tento dárek.</span>}
