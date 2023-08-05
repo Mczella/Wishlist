@@ -33,6 +33,7 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
 
 
     const handleInputChange = (e) => {
+        console.log(e)
         const {name, value} = e.target
         setValues((prevValues) => ({
             ...prevValues,
@@ -65,6 +66,9 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                     <>
                         {editMode[gift.id] ? (
                             <Box p='6'>
+                                <Text align={"justify"} fontWeight={'normal'} fontSize={'md'} color={'gray.600'}>
+                                    Obrázek:
+                                </Text>
                                 <Input
                                     name="imageUrl"
                                     defaultValue={gift.imageUrl || "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="}
@@ -85,11 +89,16 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                         <Box p='6'>
                             <Box mt='1' fontWeight='semibold' lineHeight='tight'>
                                 {editMode[gift.id] ? (
+                                    <>
+                                    <Text align={"justify"} fontWeight={'normal'} fontSize={'md'} color={'gray.600'}>
+                                        Název
+                                        </Text>
                                     <Input
                                         name="name"
                                         defaultValue={gift.name}
                                         onChange={handleInputChange}
                                     />
+                                    </>
                                 ) : (
                                     gift.name
                                 )}
@@ -97,11 +106,14 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                             <Box mt='1'>
                                 <Text align={"justify"} fontSize={'md'} color={'gray.600'}>
                                     {editMode[gift.id] ? (
+                                        <>
+                                            <Text>Popis:</Text>
                                         <Textarea
                                             name="description"
                                             defaultValue={gift.description}
                                             onChange={handleInputChange}
                                         />
+                                            </>
                                     ) : (
                                         gift.description
                                     )}
@@ -135,6 +147,7 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                                                 variant="outline"
                                                 useBasicStyles
                                                 selectedOptionStyle="check"
+                                                onChange={handleInputChange}
                                             />
                                         </FormControl>
 
@@ -150,6 +163,12 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                     </>
                 </ModalBody>
                 <ModalFooter>
+                        <IconButton rounded={'lg'}
+                                    variant={'ghost'}
+                                    aria-label='Zrušit'
+                                    colorScheme={'orange'}
+                                    onClick={onOpen}
+                                    icon={<DeleteIcon/>}/>
                     <ButtonGroup spacing='2'>
                         <ButtonGroup
                             isAttached variant='outline'
@@ -184,12 +203,6 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                                 </Button>
                             )}
                         </ButtonGroup>
-                        <IconButton rounded={'lg'}
-                                    variant={'ghost'}
-                                    aria-label='Zrušit'
-                                    colorScheme={'orange'}
-                                    onClick={onOpen}
-                                    icon={<DeleteIcon/>}/>
 
                         {gift.buyer === "" ? (
                             <Button
