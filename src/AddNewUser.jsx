@@ -48,7 +48,7 @@ const AddNewUser = ({onSimpleClose}) => {
             align={'baseline'}
             justify={'center'}
             bg={'gray.200'}>
-            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={2} px={6}>
                 <Stack align={'center'}>
                     <Heading fontSize={'4xl'} textAlign={'center'}>
                         Vytvořte uživatele
@@ -71,7 +71,6 @@ const AddNewUser = ({onSimpleClose}) => {
                                     name="name"
                                     type="name"
                                     placeholder="jméno"
-                                    className={`form-control ${errors.name && "invalid"}`}
                                     {...register("name", {required: true})}
                                 />
                                 <FormErrorMessage>
@@ -79,7 +78,7 @@ const AddNewUser = ({onSimpleClose}) => {
                                 </FormErrorMessage>
                             </FormControl>
 
-                            <FormControl id="surname" isInvalid={errors.password}>
+                            <FormControl id="surname" isInvalid={errors.surname}>
                                 <FormLabel>Příjmení</FormLabel>
 
                                 <Input
@@ -96,7 +95,7 @@ const AddNewUser = ({onSimpleClose}) => {
                                 <Stack spacing={2} pt={2}>
                                     <Button
                                         isLoading={isLoading}
-                                        rounded={'full'}
+                                        rounded={'lg'}
                                         colorScheme={'orange'}
                                         bg={'orange.400'}
                                         _hover={{bg: 'orange.500'}}
