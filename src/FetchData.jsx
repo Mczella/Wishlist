@@ -26,7 +26,6 @@ const FetchData = () => {
     const btnRef = useRef(null)
     const [isLoading, setIsLoading] = useState(false)
     const {ref, inView} = useInView({
-        /* Optional options */
         initialInView: true
     })
 
@@ -40,6 +39,7 @@ const FetchData = () => {
 
     const handleClose = () => {
         setDefaultValues(clearForm)
+        setLink("")
         onClose()
     }
 
@@ -74,11 +74,12 @@ const FetchData = () => {
         setIsLoading(false)
     }
 
+
     return (
         <div>
             <PrimaryButton
                 width={'100%'}
-                ref={ref}
+                originalRef={ref}
                 Button leftIcon={<AddIcon/>}
                 variant='solid'
                 onClick={onOpen}>
