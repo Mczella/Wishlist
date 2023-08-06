@@ -1,5 +1,4 @@
 import {
-    Flex,
     Container,
     Heading,
     Stack,
@@ -7,6 +6,7 @@ import {
     Button,
 } from '@chakra-ui/react'
 import {useNavigate} from "react-router-dom"
+import {PrimaryButton} from "./Styles/Buttons";
 
 export default function WelcomePage() {
         const navigate = useNavigate()
@@ -31,17 +31,14 @@ export default function WelcomePage() {
                     dostupnosti. Ať jde o dárky k Vánocům nebo seznam svatebních darů, o vše se postaráme!
                 </Text>
                 <Stack spacing={6} direction={'row'}>
-                    <Button
-                        rounded={'full'}
+                    <PrimaryButton
                         px={6}
-                        colorScheme={'orange'}
-                        bg={'orange.400'}
-                        _hover={{ bg: 'orange.500' }}
                         onClick={() => {navigate("/login")}}>
                         Přihlaste se
-                    </Button>
+                    </PrimaryButton>
                     <Button
-                        rounded={'full'} px={6}
+                        rounded={'lg'}
+                        px={6}
                         onClick={() => {navigate("/signup")}}>
                         Zaregistrujte se
                     </Button>
