@@ -189,6 +189,7 @@ const Users = () => {
                                                 user.admin ? "Ano" : "Ne"
                                             )}</Td>
                                             <Td textAlign={'right'}>
+                                            <ButtonGroup>
                                                 <ButtonGroup
                                                     isAttached variant='outline'
                                                 >
@@ -231,6 +232,7 @@ const Users = () => {
                                                     onClick={onOpen}>
                                                     Smazat
                                                 </Button>
+                                            </ButtonGroup>
                                                 <AlertPopup isAlertOpen={isAlertOpen} onAlertClose={onAlertClose}
                                                             cancelRef={cancelRef} onDelete={() => onDelete(user)}/>
                                             </Td>
