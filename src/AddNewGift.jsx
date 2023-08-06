@@ -57,9 +57,9 @@ const AddNewGift = ({defaultValues, onClose}) => {
         console.log(data)
         const updatedData = {
             ...data,
-            recipient: data.recipient.map((recipient) => recipient.label),
+            recipient: data.recipient.map((recipient) => recipient.value),
             buyer: "",
-            creator: `${currentUser.name} ${currentUser.surname}`
+            creator: currentUser.id
         }
         console.log(updatedData)
         try {
@@ -86,7 +86,7 @@ const AddNewGift = ({defaultValues, onClose}) => {
 
     useEffect(() => {
         reset(defaultValues)
-    }, [defaultValues])
+    }, [defaultValues, reset])
 
     return (
 
