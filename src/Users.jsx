@@ -22,7 +22,7 @@ import {
     Tr,
     Th,
     Td,
-    Tfoot, TableContainer, Table, Tbody, Tabs, TabList, Tab, TabPanels, TabPanel, Select, IconButton
+    Tfoot, TableContainer, Table, Tbody, Tabs, TabList, Tab, TabPanels, TabPanel, Select, IconButton, Box
 } from "@chakra-ui/react";
 import AlertPopup from "./AlertPopup";
 import {CloseIcon} from "@chakra-ui/icons";
@@ -130,7 +130,7 @@ const Users = () => {
                     </ModalContent>
                 </Modal>
 
-                <TableContainer>
+                <Box overflowX="auto">
                     <Table variant='simple' size={'lg'} colorScheme={'orange'}>
                         <Thead>
                             <Tr>
@@ -144,7 +144,7 @@ const Users = () => {
 
 
                             {users.map((user) => (
-                                isAdmin() || user.id === currentUID ? ( // presunout do useeffect
+                                isAdmin() || user.id === currentUID ? ( // presunout do useeffect na query
                                         <Tr key={user.id}>
                                             <Td>
                                                 {editMode[user.id] ? (
@@ -178,7 +178,7 @@ const Users = () => {
                                             ) : (
                                                 user.admin ? "Ano" : "Ne"
                                             )}</Td>
-                                            <Td>
+                                            <Td textAlign={'right'}>
                                                 <ButtonGroup
                                                     isAttached variant='outline'
                                                 >
@@ -237,7 +237,7 @@ const Users = () => {
                             </Tr>
                         </Tfoot>
                     </Table>
-                </TableContainer>
+                </Box>
             </Stack>
         </>
     )
