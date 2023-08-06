@@ -1,8 +1,10 @@
 import {addDoc, deleteDoc, doc, getDoc, setDoc, collection} from "firebase/firestore"
 import {db} from "./firebase"
+import {useState} from "react";
 
 
 export const handleEdit = async (id, collection, values) => {
+    console.log({ id, values })
     const docRef = doc(db, collection, id)
         const docSnap = await getDoc(docRef)
         console.log(docSnap.data())
