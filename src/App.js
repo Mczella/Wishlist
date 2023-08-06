@@ -1,6 +1,5 @@
 import React, {useContext} from 'react'
 import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom"
-import './styles/App.css'
 import Login from "./Login"
 import Home from "./Home"
 import {AuthorizationContext} from "./AuthorizationContext"
