@@ -60,98 +60,113 @@ const GiftList = ({gifts, users, isLoaded}) => {
         }
     }
 
+    const formatUser = (user) => {
+        if (user == null) {
+            return "loading"
+        }
+        return `${user.name} ${user.surname}`
+    }
+
     return (
         <>
             {gifts.map((gift) => (
-                    <Box
-                        maxW='sm' borderWidth='1px'
-                        rounded={'md'}
-                        bg={'white'}
-                        boxShadow={'lg'}
-                        overflow='hidden'
-                        key={gift.id}
-                        pt={6}
-                        _hover={{boxShadow: 'inner'}}
-                        onClick={() => setOpenedModal(gift.id)}
-                        ref={btnRef}
+                <Box
+                    maxW='sm' borderWidth='1px'
+                    rounded={'md'}
+                    bg={'white'}
+                    boxShadow={'lg'}
+                    overflow='hidden'
+                    key={gift.id}
+                    pt={6}
+                    _hover={{boxShadow: 'inner'}}
+                    onClick={() => setOpenedModal(gift.id)}
+                    ref={btnRef}
 
-                    >
-                        <>
-                            <Skeleton isLoaded={isLoaded}>
-                                <Center>
+                >
+                    <>
+
+                        <Center>
                             <Image
                                 objectFit='contain'
                                 boxSize='200px'
                                 display='initial'
-                                src={gift.imageUrl || "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="}
+                                src={gift.imageUrl || "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-7.jpg"}
                                 alt={gift.imageUrl ? gift.name : "thumbnail"}
                             />
-                                </Center>
-                </Skeleton>
+                        </Center>
 
-                            <Box p='6'>
-                                <Box mt='1' fontWeight='semibold' lineHeight='tight' height={12} noOfLines={2}>
-                                    {gift.name}
-                                </Box>
-                                <Box mt='1' align={"justify"} height={16} noOfLines={3}>
-                                    <Text fontSize={'sm'} color={'gray.600'}>
-                                        {gift.description}
-                                    </Text>
-                                </Box>
-                                <Box display='flex' py={2} alignItems='baseline'>
-                                    <Badge onClick={(e) => e.stopPropagation()} borderRadius='full' px='2'
-                                           colorScheme='orange'>
-                                        <Link href={gift.link}
-                                              target="_blank">
-                                            Prohlédnout v e-shopu
-                                        </Link>
-                                    </Badge>
-                                </Box>
-                                <Divider/>
-                                <Box>
-                                    <Text align={"left"} fontSize={'sm'} color={'gray.600'}>
-                                        Pro: {gift.recipient}
-                                    </Text>
-                                </Box>
-                                <Box align={"right"}>
-                                    {gift.buyer === "" ? (
-                                        <PrimaryButton
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                                handleEditGift(gift.id, "Gifts", {
-                                                    buyer: `${user.name} ${user.surname}`
-                                                })
-                                            }}
-                                        >
-                                            Koupit
-                                        </PrimaryButton>
-                                    ) : gift.buyer === `${user.name} ${user.surname}` ? (
-                                        <SecondaryButton
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                                handleEditGift(gift.id, "Gifts", {
-                                                    buyer: "",
-                                                })
-                                            }}
-                                        >
-                                            Vrátit koupi zpět
-                                        </SecondaryButton>
-                                    ) : user.admin ? (
-                                        <Button>
-                                            Koupil {gift.buyer}
-                                        </Button>
-                                    ) : (
-                                        <Button disabled={true}>
-                                            Koupeno
-                                        </Button>
-                                    )}
-                                     {giftError === gift.id &&
-                                         <Text fontSize='xs' color='red'>Bohužel došlo k neočekávané chybě, zkuste to později.</Text>}
-                                </Box>
+                        <Box p='6'>
+                            <Box mt='1' fontWeight='semibold' lineHeight='tight' height={12} noOfLines={2}>
+                                {gift.name}
                             </Box>
-                            <GiftDetailModal gift={gift} btnRef={btnRef} user={user} users={users} onClose={() => setOpenedModal(null)} isOpen={openedModal === gift.id} handleEditGift={handleEditGift}/>
-                        </>
-                    </Box>
+                            <Box mt='1' align={"justify"} height={16} noOfLines={3}>
+                                <Text fontSize={'sm'} color={'gray.600'}>
+                                    {gift.description}
+                                </Text>
+                            </Box>
+                            <Box display='flex' py={2} alignItems='baseline'>
+                                <Badge onClick={(e) => e.stopPropagation()} borderRadius='full' px='2'
+                                       colorScheme='orange'>
+                                    <Link href={gift.link}
+                                          target="_blank">
+                                        Prohlédnout v e-shopu
+                                    </Link>
+                                </Badge>
+                            </Box>
+                            <Divider/>
+                            <Box>
+                                <Text align={"left"} fontSize={'sm'} color={'gray.600'}>
+                                    Pro: {
+                                    gift.recipient
+                                        .map((recipient) => formatUser(
+                                            users.find((user) => user.id === recipient)
+                                        ))
+                                        .join(", ")
+                                }
+                                </Text>
+                            </Box>
+                            <Box align={"right"}>
+                                {gift.buyer === "" ? (
+                                    <PrimaryButton
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            handleEditGift(gift.id, "Gifts", {
+                                                buyer: user.id
+                                            })
+                                        }}
+                                    >
+                                        Koupit
+                                    </PrimaryButton>
+                                ) : gift.buyer === user.id ? (
+                                    <SecondaryButton
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            handleEditGift(gift.id, "Gifts", {
+                                                buyer: "",
+                                            })
+                                        }}
+                                    >
+                                        Vrátit koupi zpět
+                                    </SecondaryButton>
+                                ) : user.admin ? (
+                                    <Button>
+                                        Koupil {formatUser(users.find((user) => user.id === gift.buyer))}
+                                    </Button>
+                                ) : (
+                                    <Button disabled={true}>
+                                        Koupeno
+                                    </Button>
+                                )}
+                                {giftError === gift.id &&
+                                    <Text fontSize='xs' color='red'>Bohužel došlo k neočekávané chybě, zkuste to
+                                        později.</Text>}
+                            </Box>
+                        </Box>
+                        <GiftDetailModal gift={gift} btnRef={btnRef} user={user} users={users}
+                                         onClose={() => setOpenedModal(null)} isOpen={openedModal === gift.id}
+                                         handleEditGift={handleEditGift}/>
+                    </>
+                </Box>
             ))}
         </>
     )
