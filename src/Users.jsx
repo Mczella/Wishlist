@@ -36,6 +36,7 @@ import {
 } from "@chakra-ui/react";
 import AlertPopup from "./AlertPopup";
 import {CloseIcon} from "@chakra-ui/icons";
+import {SecondaryButton} from "./Styles/Buttons";
 
 
 const Users = () => {
@@ -117,8 +118,8 @@ const Users = () => {
                 </Button>
                 <Modal isOpen={isCredentialsOpen} onClose={onCredentialsClose}>
                     <ModalOverlay/>
-                    <ModalContent bg={'gray.200'}>
-                        <ModalHeader rounded={"lg"}>
+                    <ModalContent>
+                        <ModalHeader bg={'gray.200'} rounded={"lg"}>
                             <Tabs isFitted variant='enclosed' colorScheme={'orange'}>
                                 <TabList>
                                     <Tab>Přidat uživatele</Tab>
@@ -135,7 +136,7 @@ const Users = () => {
                             </Tabs>
                         </ModalHeader>
                         <ModalCloseButton/>
-                        <ModalFooter rounded={'lg'}>
+                        <ModalFooter bg={'gray.200'} rounded={'lg'}>
                         </ModalFooter>
                     </ModalContent>
                 </Modal>
@@ -154,7 +155,7 @@ const Users = () => {
 
 
                             {users.map((user) => (
-                                isAdmin() || user.id === currentUID ? ( // presunout do useeffect na query
+                                isAdmin() || user.id === currentUID ? ( // presunout do useeffect
                                         <Tr key={user.id}>
                                             <Td>
                                                 {editMode[user.id] ? (
@@ -180,7 +181,7 @@ const Users = () => {
                                             <Td>{editMode[user.id] ? (
                                                 <Select
                                                     name="admin"
-                                                    defaultValue={user.admin ? "true" : "false"}
+                                                    defaultValue={user.admin ? "Ano" : "Ne"}
                                                     onChange={handleSelect}>
                                                     <option value="true">Ano</option>
                                                     <option value="false">Ne</option>
@@ -195,16 +196,13 @@ const Users = () => {
                                                 >
                                                     {editMode[user.id] ? (
                                                         <>
-                                                            <Button rounded={'lg'}
-                                                                    colorScheme={'orange'}
-                                                                    _hover={{textColor: 'orange.500'}}
-                                                                    onClick={() => {
+                                                            <SecondaryButton onClick={() => {
                                                                         handleEdit(user.id, "users", values)
                                                                         handleEditClick(user.id)
                                                                     }}>Uložit
-                                                            </Button>
-                                                            <IconButton rounded={'lg'}
-                                                                        aria-label='Zrušit'
+                                                            </SecondaryButton>
+                                                            <IconButton aria-label='Zrušit'
+                                                                        rounded={'lg'}
                                                                         colorScheme={'orange'}
                                                                         _hover={{textColor: 'orange.500'}}
                                                                         onClick={() => {
@@ -213,25 +211,19 @@ const Users = () => {
                                                                         icon={<CloseIcon/>}/>
                                                         </>
                                                     ) : (
-                                                        <Button rounded={'lg'}
-                                                                colorScheme={'orange'}
-                                                                _hover={{textColor: 'orange.500'}}
+                                                        <SecondaryButton
                                                                 onClick={() => handleEditClick(user.id)}
                                                         >
                                                             Upravit
-                                                        </Button>
+                                                        </SecondaryButton>
                                                     )}
                                                 </ButtonGroup>
 
-                                                <Button
+                                                <SecondaryButton
                                                     mx={'2'}
-                                                    rounded={'lg'}
-                                                    variant={'outline'}
-                                                    colorScheme={'orange'}
-                                                    _hover={{textColor: 'orange.500'}}
                                                     onClick={onOpen}>
                                                     Smazat
-                                                </Button>
+                                                </SecondaryButton>
                                             </ButtonGroup>
                                                 <AlertPopup isAlertOpen={isAlertOpen} onAlertClose={onAlertClose}
                                                             cancelRef={cancelRef} onDelete={() => onDelete(user)}/>
