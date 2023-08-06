@@ -30,9 +30,24 @@ const FetchData = () => {
         initialInView: true
     })
 
+    const clearForm = {
+            name: "",
+            link: "",
+            recipient: "",
+            description: "",
+            imageUrl: ""
+        }
+
+    const handleClose = () => {
+        setDefaultValues(clearForm)
+        onClose()
+    }
+
+
     const fetchMetaData = async (e) => {
         e.preventDefault()
         setIsLoading(true)
+        setError("")
         try {
             const functions = getFunctions()
             const getMetaData = httpsCallable(functions, 'getMetaData')
@@ -57,15 +72,7 @@ const FetchData = () => {
             setError(error)
         }
         setIsLoading(false)
-    };
-
-    useEffect(() => {
-        if (!inView) {
-            console.log('Element is not in view!');
-        } else if (inView) {
-            console.log("in view")
-        }
-    }, [inView]);
+    }
 
     return (
         <div>
@@ -82,8 +89,8 @@ const FetchData = () => {
                 <IconButton
                     display={!inView ? 'inherit' : 'none'}
                     position={'fixed'}
-                    bottom={'40px'}
-                    right={'40px'}
+                    bottom={'5%'}
+                    right={'5%'}
                     isRound={true}
                     variant='solid'
                     colorScheme='orange'
@@ -92,8 +99,6 @@ const FetchData = () => {
                     fontSize='20px'
                     boxShadow={'lg'}
                     _hover={{bg: 'orange.400'}}
-
-
                     onClick={onOpen}
                     icon={<Center><AddIcon/></Center>}
                 />,
@@ -102,7 +107,7 @@ const FetchData = () => {
 
 
             <Modal
-                onClose={onClose}
+                onClose={handleClose}
                 finalFocusRef={btnRef}
                 isOpen={isOpen}
                 scrollBehavior="inside"
@@ -110,7 +115,7 @@ const FetchData = () => {
                 <ModalOverlay/>
                 <ModalContent bg={'gray.200'}>
                     <ModalHeader>
-                        <Heading fontSize={'2xl'} textAlign={'center'} mt={4} mb={2}>
+                        <Heading fontSize={'4xl'} textAlign={'center'} mt={8} mb={4}>
                             Přidejte nový dárek
                         </Heading>
                     </ModalHeader>
@@ -150,7 +155,7 @@ const FetchData = () => {
                                     </Stack>
                                 </FormControl>
                             </form>
-                            <AddNewGift defaultValues={defaultValues} onClose={onClose}/>
+                            <AddNewGift defaultValues={defaultValues} onClose={handleClose}/>
                         </Box>
                     </ModalBody>
                     <ModalFooter>
