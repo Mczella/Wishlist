@@ -22,7 +22,17 @@ import {
     Tr,
     Th,
     Td,
-    Tfoot, TableContainer, Table, Tbody, Tabs, TabList, Tab, TabPanels, TabPanel, Select, IconButton, Box
+    Tfoot,
+    Table,
+    Tbody,
+    Tabs,
+    TabList,
+    Tab,
+    TabPanels,
+    TabPanel,
+    Select,
+    IconButton,
+    Box
 } from "@chakra-ui/react";
 import AlertPopup from "./AlertPopup";
 import {CloseIcon} from "@chakra-ui/icons";
@@ -103,7 +113,7 @@ const Users = () => {
                         _hover={{bg: 'orange.500'}}
                         onClick={onCredentialsOpen}
                 >
-                    Přidat nového uživatele s přihlašovacími údaji.
+                    Přidat nového uživatele
                 </Button>
                 <Modal isOpen={isCredentialsOpen} onClose={onCredentialsClose}>
                     <ModalOverlay/>
