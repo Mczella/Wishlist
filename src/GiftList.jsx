@@ -131,13 +131,13 @@ const GiftList = ({gifts, users, isLoaded}) => {
                                         onClick={(e) => {
                                             e.stopPropagation()
                                             handleEditGift(gift.id, "Gifts", {
-                                                buyer: user.id
+                                                buyer: currentUID
                                             })
                                         }}
                                     >
                                         Koupit
                                     </PrimaryButton>
-                                ) : gift.buyer === user.id ? (
+                                ) : gift.buyer === currentUID ? (
                                     <SecondaryButton
                                         onClick={(e) => {
                                             e.stopPropagation()
@@ -164,7 +164,7 @@ const GiftList = ({gifts, users, isLoaded}) => {
                         </Box>
                         <GiftDetailModal gift={gift} btnRef={btnRef} user={user} users={users}
                                          onClose={() => setOpenedModal(null)} isOpen={openedModal === gift.id}
-                                         handleEditGift={handleEditGift}/>
+                                         handleEditGift={handleEditGift} currentUID={currentUID}/>
                     </>
                 </Box>
             ))}

@@ -20,10 +20,9 @@ import {CloseIcon, DeleteIcon, EditIcon} from "@chakra-ui/icons"
 import {Select} from "chakra-react-select"
 import AlertPopup from "./AlertPopup";
 
-const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEditGift}) => {
+const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEditGift, currentUID}) => {
     const [editMode, setEditMode] = useState({})
     const [values, setValues] = useState({})
-    const [checkedUsers, setCheckedUsers] = useState([])
     const userOptions = users.map((user) => ({
         value: user.id,
         label: `${user.name} ${user.surname}`,
@@ -227,17 +226,17 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                                             colorScheme={'orange'}
                                             _hover={{textColor: 'orange.500'}}
                                             onClick={() => handleEditClick(gift.id)}
-                                            disabled={!((gift.creator === user.id) || user.admin)}
+                                            disabled={!((gift.creator === currentUID) || user.admin)}
                                             >
                                     Upravit
                                 </Button>
                             )}
                         </ButtonGroup>
 
-                        {gift.buyer.label === "" ? (
+                        {gift.buyer === "" ? (
                             <Button
                                 onClick={() => handleEditGift(gift.id, "Gifts", {
-                                    buyer: user.id
+                                    buyer: currentUID
                                 })}
                                 rounded={'lg'}
                                 colorScheme={'orange'}
@@ -246,7 +245,7 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                             >
                                 Koupit
                             </Button>
-                        ) : gift.buyer === user.id ? (
+                        ) : gift.buyer === currentUID ? (
                             <Button
                                 onClick={() =>
                                     handleEdit(gift.id, "Gifts", {
