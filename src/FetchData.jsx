@@ -15,7 +15,7 @@ import {
 import {AddIcon, EmailIcon} from "@chakra-ui/icons";
 import {useInView} from 'react-intersection-observer'
 import {createPortal} from "react-dom";
-import {PrimaryButton} from "./Styles/Buttons";
+import {PrimaryButton} from "./styles/Buttons";
 
 const FetchData = () => {
     const [defaultValues, setDefaultValues] = useState({})

@@ -21,7 +21,7 @@ import {
     FormErrorMessage,
 } from '@chakra-ui/react';
 import {ViewIcon, ViewOffIcon} from "@chakra-ui/icons";
-import {PrimaryButton} from "./Styles/Buttons";
+import {PrimaryButton} from "./styles/Buttons";
 
 
 const RegisterUser = ({variant, onCredentialsClose}) => {

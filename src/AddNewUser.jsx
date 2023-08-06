@@ -13,7 +13,7 @@ import {
     Stack,
     Text
 } from "@chakra-ui/react";
-import {PrimaryButton} from "./Styles/Buttons";
+import {PrimaryButton} from "./styles/Buttons";
 
 
 const AddNewUser = ({onSimpleClose}) => {

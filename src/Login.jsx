@@ -20,7 +20,7 @@ import {auth} from "./firebase"
 import {useNavigate} from "react-router-dom"
 import {AuthorizationContext} from "./AuthorizationContext"
 import {ViewIcon, ViewOffIcon} from '@chakra-ui/icons';
-import {PrimaryButton} from "./Styles/Buttons";
+import {PrimaryButton} from "./styles/Buttons";
 
 
 const Login = () => {

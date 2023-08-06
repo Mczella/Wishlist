@@ -36,7 +36,7 @@ import {
 } from "@chakra-ui/react";
 import AlertPopup from "./AlertPopup";
 import {CloseIcon} from "@chakra-ui/icons";
-import {SecondaryButton} from "./Styles/Buttons";
+import {SecondaryButton} from "./styles/Buttons";
 
 
 const Users = () => {

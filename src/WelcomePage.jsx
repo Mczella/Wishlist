@@ -6,7 +6,7 @@ import {
     Button,
 } from '@chakra-ui/react'
 import {useNavigate} from "react-router-dom"
-import {PrimaryButton} from "./Styles/Buttons";
+import {PrimaryButton} from "./styles/Buttons";
 
 export default function WelcomePage() {
         const navigate = useNavigate()

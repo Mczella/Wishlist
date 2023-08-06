@@ -15,7 +15,7 @@ import {collection, onSnapshot} from "firebase/firestore"
 import {db} from "./firebase";
 import {AuthorizationContext} from "./AuthorizationContext"
 import {Select} from "chakra-react-select"
-import {PrimaryButton} from "./Styles/Buttons";
+import {PrimaryButton} from "./styles/Buttons";
 
 
 const AddNewGift = ({defaultValues, onClose}) => {

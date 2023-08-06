@@ -29,7 +29,7 @@ import {AuthorizationContext} from "./AuthorizationContext";
 import {doc, onSnapshot} from "firebase/firestore";
 import {db} from "./firebase";
 import GiftDetailModal from "./GiftDetailModal";
-import {PrimaryButton, SecondaryButton} from "./Styles/Buttons";
+import {PrimaryButton, SecondaryButton} from "./styles/Buttons";
 
 const GiftList = ({gifts, users, isLoaded}) => {
 
