@@ -1,4 +1,4 @@
-import {onSnapshot, collection} from "firebase/firestore"
+import {onSnapshot, collection, query, where, orderBy} from "firebase/firestore"
 import React, {useEffect, useState} from "react"
 import {db} from "./firebase"
 import {
@@ -21,7 +21,9 @@ const Gifts = () => {
 
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(db, "Gifts"), (snapshot) => {
+        const q = query(collection(db, "Gifts"));
+
+        const unsubscribe = onSnapshot(q, (snapshot) => {
             setGifts(snapshot.docs.map((doc) => ({...doc.data(), id: doc.id})))
             setIsLoaded(true)
         })
