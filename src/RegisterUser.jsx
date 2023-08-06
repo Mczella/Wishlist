@@ -21,6 +21,7 @@ import {
     FormErrorMessage,
 } from '@chakra-ui/react';
 import {ViewIcon, ViewOffIcon} from "@chakra-ui/icons";
+import {PrimaryButton} from "./Styles/Buttons";
 
 
 const RegisterUser = ({variant, onCredentialsClose}) => {
@@ -213,14 +214,10 @@ const RegisterUser = ({variant, onCredentialsClose}) => {
                                 </HStack>
                                 <Stack spacing={6}>
                                     <Stack spacing={2} pt={2}>
-                                        <Button isLoading={isLoading}
-                                                rounded={'lg'}
-                                                colorScheme={'orange'}
-                                                bg={'orange.400'}
-                                                _hover={{bg: 'orange.500'}}
+                                        <PrimaryButton isLoading={isLoading}
                                                 type="submit">
                                             Vytvořit účet
-                                        </Button>
+                                        </PrimaryButton>
                                         {error &&
                                             <Text fontSize='xs' color='red'>
                                                 Při vytváření uživatelského účtu došlo k chybě. Zkuste to prosím znovu.

@@ -15,6 +15,7 @@ import {collection, onSnapshot} from "firebase/firestore"
 import {db} from "./firebase";
 import {AuthorizationContext} from "./AuthorizationContext"
 import {Select} from "chakra-react-select"
+import {PrimaryButton} from "./Styles/Buttons";
 
 
 const AddNewGift = ({defaultValues, onClose}) => {
@@ -147,14 +148,10 @@ const AddNewGift = ({defaultValues, onClose}) => {
                 </FormControl>
                 <Stack spacing={6}>
                     <Stack spacing={2} pt={2}>
-                        <Button isLoading={isLoading}
-                                rounded={'lg'}
-                                colorScheme={'orange'}
-                                bg={'orange.400'}
-                                _hover={{bg: 'orange.500'}}
+                        <PrimaryButton isLoading={isLoading}
                                 type="submit">
                             Přidat dárek
-                        </Button>
+                        </PrimaryButton>
                         <FormErrorMessage>
                             {addGiftError && <span>Při vytváření dárku došlo k chybě. Zkuste to prosím znovu.</span>}
                         </FormErrorMessage>

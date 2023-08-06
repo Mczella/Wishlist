@@ -29,6 +29,7 @@ import {AuthorizationContext} from "./AuthorizationContext";
 import {doc, onSnapshot} from "firebase/firestore";
 import {db} from "./firebase";
 import GiftDetailModal from "./GiftDetailModal";
+import {PrimaryButton, SecondaryButton} from "./Styles/Buttons";
 
 const GiftList = ({gifts, users, isLoaded}) => {
 
@@ -114,11 +115,7 @@ const GiftList = ({gifts, users, isLoaded}) => {
                                 </Box>
                                 <Box align={"right"}>
                                     {gift.buyer === "" ? (
-                                        <Button
-                                            rounded={'lg'}
-                                            colorScheme={'orange'}
-                                            bg={'orange.400'}
-                                            _hover={{bg: 'orange.500'}}
+                                        <PrimaryButton
                                             onClick={(e) => {
                                                 e.stopPropagation()
                                                 handleEditGift(gift.id, "Gifts", {
@@ -127,13 +124,9 @@ const GiftList = ({gifts, users, isLoaded}) => {
                                             }}
                                         >
                                             Koupit
-                                        </Button>
+                                        </PrimaryButton>
                                     ) : gift.buyer === `${user.name} ${user.surname}` ? (
-                                        <Button
-                                            rounded={'lg'}
-                                            variant={'outline'}
-                                            colorScheme={'orange'}
-                                            _hover={{textColor: 'orange.500'}}
+                                        <SecondaryButton
                                             onClick={(e) => {
                                                 e.stopPropagation()
                                                 handleEditGift(gift.id, "Gifts", {
@@ -142,7 +135,7 @@ const GiftList = ({gifts, users, isLoaded}) => {
                                             }}
                                         >
                                             Vrátit koupi zpět
-                                        </Button>
+                                        </SecondaryButton>
                                     ) : user.admin ? (
                                         <Button>
                                             Koupil {gift.buyer}

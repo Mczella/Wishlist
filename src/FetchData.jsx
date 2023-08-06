@@ -13,20 +13,22 @@ import {
     useDisclosure
 } from "@chakra-ui/react";
 import {AddIcon, EmailIcon} from "@chakra-ui/icons";
-import { useInView } from 'react-intersection-observer'
+import {useInView} from 'react-intersection-observer'
 import {createPortal} from "react-dom";
+import {PrimaryButton} from "./Styles/Buttons";
 
 const FetchData = () => {
     const [defaultValues, setDefaultValues] = useState({})
     const [link, setLink] = useState("")
     const linkRef = useRef()
     const [error, setError] = useState("")
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    const btnRef = React.useRef(null)
+    const {isOpen, onOpen, onClose} = useDisclosure()
+    const btnRef = useRef(null)
     const [isLoading, setIsLoading] = useState(false)
-    const { ref, inView } = useInView({
+    const {ref, inView} = useInView({
         /* Optional options */
-        initialInView: true})
+        initialInView: true
+    })
 
     const fetchMetaData = async (e) => {
         e.preventDefault()
@@ -57,7 +59,7 @@ const FetchData = () => {
         setIsLoading(false)
     };
 
-  useEffect(() => {
+    useEffect(() => {
         if (!inView) {
             console.log('Element is not in view!');
         } else if (inView) {
@@ -67,25 +69,21 @@ const FetchData = () => {
 
     return (
         <div>
-            <Button
+            <PrimaryButton
                 width={'100%'}
                 ref={ref}
-                Button leftIcon={<AddIcon />}
-                colorScheme='orange'
-                rounded={'lg'}
-                bg={'orange.400'}
-                _hover={{bg: 'orange.500'}}
+                Button leftIcon={<AddIcon/>}
                 variant='solid'
                 onClick={onOpen}>
                 Přidat dárek
-            </Button>
+            </PrimaryButton>
 
             {createPortal(
                 <IconButton
-                    display={!inView? 'inherit' : 'none'}
+                    display={!inView ? 'inherit' : 'none'}
                     position={'fixed'}
-                    bottom={'5%'}
-                    right={'5%'}
+                    bottom={'40px'}
+                    right={'40px'}
                     isRound={true}
                     variant='solid'
                     colorScheme='orange'
@@ -109,14 +107,14 @@ const FetchData = () => {
                 isOpen={isOpen}
                 scrollBehavior="inside"
             >
-                <ModalOverlay />
+                <ModalOverlay/>
                 <ModalContent bg={'gray.200'}>
                     <ModalHeader>
                         <Heading fontSize={'2xl'} textAlign={'center'} mt={4} mb={2}>
                             Přidejte nový dárek
                         </Heading>
                     </ModalHeader>
-                    <ModalCloseButton />
+                    <ModalCloseButton/>
                     <ModalBody>
                         <Box
                             align={'baseline'}
@@ -125,36 +123,34 @@ const FetchData = () => {
                             bg={'white'}
                             boxShadow={'lg'}
                             p={8}>
-                        <form onSubmit={fetchMetaData}>
-                            <FormControl id="link">
-                            <FormLabel htmlFor="metadataLink">Pro rychlejší vyplnění formuláře vložte odkaz na dárek.</FormLabel>
-                            <Input
-                                name="metadataLink"
-                                ref={linkRef}
-                                type="text"
-                                required
-                                value={link}
-                                onChange={(e) => setLink(e.target.value)}
-                            />
+                            <form onSubmit={fetchMetaData}>
+                                <FormControl id="link">
+                                    <FormLabel htmlFor="metadataLink">Pro rychlejší vyplnění formuláře vložte odkaz na
+                                        dárek.</FormLabel>
+                                    <Input
+                                        name="metadataLink"
+                                        ref={linkRef}
+                                        type="text"
+                                        required
+                                        value={link}
+                                        onChange={(e) => setLink(e.target.value)}
+                                    />
 
-                                <Stack spacing={6}>
-                                    <Stack spacing={2} pt={2}>
-                                        <Button isLoading={isLoading}
-                                                rounded={'lg'}
-                                                colorScheme={'orange'}
-                                                bg={'orange.400'}
-                                                _hover={{bg: 'orange.500'}}
-                                                mb={4}
-                                                type="submit">
-                                            Vložit
-                                        </Button>
-                                        {error &&
-                                            <Text fontSize='xs' color='red'>Bohužel se nepodařilo načíst data, zkuste to později nebo je zadejte ručně.</Text>}
+                                    <Stack spacing={6}>
+                                        <Stack spacing={2} pt={2}>
+                                            <PrimaryButton isLoading={isLoading}
+                                                    mb={4}
+                                                    type="submit">
+                                                Vložit
+                                            </PrimaryButton>
+                                            {error &&
+                                                <Text fontSize='xs' color='red'>Bohužel se nepodařilo načíst data,
+                                                    zkuste to později nebo je zadejte ručně.</Text>}
+                                        </Stack>
                                     </Stack>
-                                </Stack>
-                            </FormControl>
-                        </form>
-                        <AddNewGift defaultValues={defaultValues} onClose={onClose}/>
+                                </FormControl>
+                            </form>
+                            <AddNewGift defaultValues={defaultValues} onClose={onClose}/>
                         </Box>
                     </ModalBody>
                     <ModalFooter>

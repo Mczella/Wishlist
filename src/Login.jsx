@@ -15,12 +15,12 @@ import {
     FormErrorMessage,
 } from '@chakra-ui/react';
 import React, {useContext, useState} from "react"
-import "./styles/login.css"
 import {signInWithEmailAndPassword} from "firebase/auth"
 import {auth} from "./firebase"
 import {useNavigate} from "react-router-dom"
 import {AuthorizationContext} from "./AuthorizationContext"
 import {ViewIcon, ViewOffIcon} from '@chakra-ui/icons';
+import {PrimaryButton} from "./Styles/Buttons";
 
 
 const Login = () => {
@@ -120,13 +120,9 @@ const Login = () => {
                                     <Link color={'blue.500'}>Zapomněli jste heslo?</Link>
                                 </Stack>
                                 <Stack spacing={2} pt={2}>
-                                    <Button rounded={'lg'}
-                                            colorScheme={'orange'}
-                                            bg={'orange.400'}
-                                            _hover={{bg: 'orange.500'}}
-                                            type="submit">
+                                    <PrimaryButton type="submit">
                                         Přihlásit
-                                    </Button>
+                                    </PrimaryButton>
                                     {error && <Text fontSize='xs' color='red'>Špatný e-mail nebo heslo.</Text>}
                                 </Stack>
                             </Stack>

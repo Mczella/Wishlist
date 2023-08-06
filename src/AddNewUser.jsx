@@ -13,6 +13,7 @@ import {
     Stack,
     Text
 } from "@chakra-ui/react";
+import {PrimaryButton} from "./Styles/Buttons";
 
 
 const AddNewUser = ({onSimpleClose}) => {
@@ -93,15 +94,10 @@ const AddNewUser = ({onSimpleClose}) => {
                             </FormControl>
                             <Stack spacing={6}>
                                 <Stack spacing={2} pt={2}>
-                                    <Button
-                                        isLoading={isLoading}
-                                        rounded={'lg'}
-                                        colorScheme={'orange'}
-                                        bg={'orange.400'}
-                                        _hover={{bg: 'orange.500'}}
+                                    <PrimaryButton isLoading={isLoading}
                                         type="submit">
                                         Vytvořit uživatele
-                                    </Button>
+                                    </PrimaryButton>
                                     {error &&
                                         <Text fontSize='xs' color='red'>
                                             Při vytváření uživatelského účtu došlo k chybě. Zkuste to prosím znovu.
