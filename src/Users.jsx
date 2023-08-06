@@ -181,7 +181,7 @@ const Users = () => {
                                             <Td>{editMode[user.id] ? (
                                                 <Select
                                                     name="admin"
-                                                    defaultValue={user.admin ? "Ano" : "Ne"}
+                                                    defaultValue={user.admin ? "true" : "false"}
                                                     onChange={handleSelect}>
                                                     <option value="true">Ano</option>
                                                     <option value="false">Ne</option>
