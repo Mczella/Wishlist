@@ -40,7 +40,7 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
         }));
         setValues((prevValues) => ({
             ...prevValues,
-            recipient: recipients.map(item => item.label)
+            recipient: recipients.map(item => item.value)
         }));
 
     }
@@ -52,6 +52,14 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
             [name]: value,
         }))
     }
+
+    const formatUser = (user) => {
+        if (user == null) {
+            return "loading"
+        }
+        return `${user.name} ${user.surname}`
+    }
+
 
     const handleEditClick = (itemId) => {
         setEditMode((prevEditMode) => ({
@@ -67,7 +75,6 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
             finalFocusRef={btnRef}
             isOpen={isOpen}
             scrollBehavior="inside"
-
         >
             <ModalOverlay/>
             <ModalContent>
@@ -144,12 +151,19 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                             <Divider/>
                             <Box>
                                 <Text pb={2} fontSize={'md'} color={'gray.600'}>
-                                    Pro:
+                                    Pro:{" "}
                                     {editMode[gift.id] ? (
 
                                         <FormControl>
                                             <Select
-                                                defaultValue = {gift.recipient}
+                                                defaultValue = {
+                                                    gift.recipient
+                                                        .map((recipient) => users.find((user) => user.id === recipient))
+                                                        .map((user)=> ({
+                                                            value: user.id,
+                                                            label:formatUser(user)
+                                                        }))
+                                                }
                                                 colorScheme="orange"
                                                 focusBorderColor="orange.400"
                                                 isMulti
@@ -165,11 +179,16 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
 
                                     ) : (
                                         gift.recipient
-                                    )}
+                                            .map((recipient) => formatUser(
+                                                users.find((user) => user.id === recipient)
+                                            ))
+                                            .join(", ")
+                                    )
+                                    }
                                 </Text>
                             </Box>
                             <Text py={2} fontSize={'md'} color={'gray.600'}>
-                                Kdo vytvořil: {gift.creator}
+                                Kdo vytvořil: {formatUser(users.find(user => user.id === gift.creator))}
                             </Text>
                         </Box>
                     </>
@@ -189,7 +208,6 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                                 <>
                                     <Button rounded={'lg'}
                                             colorScheme={'orange'}
-                                            disabled={true}
                                             onClick={() => {
                                                 handleEdit(gift.id, "Gifts", values)
                                                 handleEditClick(gift.id)
@@ -209,17 +227,17 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                                             colorScheme={'orange'}
                                             _hover={{textColor: 'orange.500'}}
                                             onClick={() => handleEditClick(gift.id)}
-                                            disabled={!((gift.creator === `${user.name} ${user.surname}`) || user.admin)}
+                                            disabled={!((gift.creator === user.id) || user.admin)}
                                             >
                                     Upravit
                                 </Button>
                             )}
                         </ButtonGroup>
 
-                        {gift.buyer === "" ? (
+                        {gift.buyer.label === "" ? (
                             <Button
                                 onClick={() => handleEditGift(gift.id, "Gifts", {
-                                    buyer: `${user.name} ${user.surname}`
+                                    buyer: user.id
                                 })}
                                 rounded={'lg'}
                                 colorScheme={'orange'}
@@ -228,7 +246,7 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                             >
                                 Koupit
                             </Button>
-                        ) : gift.buyer === `${user.name} ${user.surname}` ? (
+                        ) : gift.buyer === user.id ? (
                             <Button
                                 onClick={() =>
                                     handleEdit(gift.id, "Gifts", {
@@ -244,7 +262,7 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                             </Button>
                         ) : user.admin ? (
                             <Button>
-                                Koupil {gift.buyer}
+                                Koupil {formatUser(users.find((user) => user.id === gift.buyer))}
                             </Button>
                         ) : (
                             <Button disabled={true}>
