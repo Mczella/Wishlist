@@ -32,7 +32,7 @@ Access the application in your web browser at http://localhost:3000.
 - Refactor the database structure to create separate collections of gifts for each user and associate users with their specific collection.
 - Implement filter and order buttons functionality for gifts and users.
 - Add an option for users to reset their password if forgotten.
-
+- Responsive navigation bar
 ## Acknowledgements
 - This project uses Firebase for authentication and data storage.
 - The UI is built using Chakra UI.
