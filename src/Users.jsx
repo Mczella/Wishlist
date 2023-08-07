@@ -1,6 +1,6 @@
 import {onSnapshot, collection} from "firebase/firestore"
 import React, {useContext, useEffect, useRef, useState} from "react"
-import {db} from "./firebase"
+import {auth, db} from "./firebase"
 import {handleDelete, handleEdit} from "./Crud"
 import {AuthorizationContext} from "./AuthorizationContext"
 import RegisterUser from "./RegisterUser"
@@ -91,18 +91,20 @@ const Users = () => {
         return currentUser?.admin ?? false
     }
 
-    const removeUser = async (user) => {
+    const removeUser = async () => {
         try {
-            await deleteUser(user)
-        } catch (error) {
+            const userAuth = auth.currentUser
+            await deleteUser(userAuth)
+        } catch(error) {
             console.log(error)
         }
     }
 
-    const onDelete = (user) => {
-        console.log({user})
-        handleDelete(user.id, "users")
-        removeUser(user)
+    const onDelete = async (user) => {
+        //remove user from gifts - if user is the only recipient, remove gift
+        //add reauthentication prompt if user has been signed in too long
+        await handleDelete(user.id, "users")
+        await removeUser()
     }
 
     return (
@@ -220,6 +222,7 @@ const Users = () => {
                                                 </ButtonGroup>
 
                                                 <SecondaryButton
+                                                    isDisabled={currentUID !== user.id}
                                                     mx={'2'}
                                                     onClick={() => setOpenedPopup(user.id)}>
                                                     Smazat
