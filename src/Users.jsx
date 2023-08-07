@@ -45,8 +45,8 @@ const Users = () => {
     const [values, setValues] = useState({})
     const currentUID = useContext(AuthorizationContext).currentUser.uid
     const {isOpen: isCredentialsOpen, onOpen: onCredentialsOpen, onClose: onCredentialsClose} = useDisclosure()
-    const {isOpen: isAlertOpen, onOpen, onClose: onAlertClose} = useDisclosure()
     const cancelRef = useRef()
+    const [openedPopup, setOpenedPopup] = useState(null)
 
 
     const handleChange = (e) => {
@@ -221,11 +221,11 @@ const Users = () => {
 
                                                 <SecondaryButton
                                                     mx={'2'}
-                                                    onClick={onOpen}>
+                                                    onClick={() => setOpenedPopup(user.id)}>
                                                     Smazat
                                                 </SecondaryButton>
                                             </ButtonGroup>
-                                                <AlertPopup isAlertOpen={isAlertOpen} onAlertClose={onAlertClose}
+                                                <AlertPopup onClose={() => setOpenedPopup(null)} isOpen={openedPopup === user.id}
                                                             cancelRef={cancelRef} onDelete={() => onDelete(user)}/>
                                             </Td>
                                         </Tr>)

@@ -5,18 +5,17 @@ import {
     AlertDialogContent,
     AlertDialogHeader,
     AlertDialogCloseButton, AlertDialogBody, AlertDialogFooter
-} from "@chakra-ui/react";
-import {handleDelete} from "./Crud";
+} from "@chakra-ui/react"
 
 
-const AlertPopup = ({isAlertOpen, onAlertClose, cancelRef, onDelete}) => {
+const AlertPopup = ({isOpen, onClose, cancelRef, onDelete}) => {
     return (
 
         <AlertDialog
             motionPreset='slideInBottom'
             leastDestructiveRef={cancelRef}
-            onClose={onAlertClose}
-            isOpen={isAlertOpen}
+            onClose={onClose}
+            isOpen={isOpen}
             isCentered
         >
             <AlertDialogOverlay/>
@@ -35,7 +34,7 @@ const AlertPopup = ({isAlertOpen, onAlertClose, cancelRef, onDelete}) => {
                             onClick={onDelete}>
                         Ano
                     </Button>
-                    <Button variant='outline' colorScheme='red' ml={3} ref={cancelRef} onClick={onAlertClose}>
+                    <Button variant='outline' colorScheme='red' ml={3} ref={cancelRef} onClick={onClose}>
                         Ne
                     </Button>
                 </AlertDialogFooter>
