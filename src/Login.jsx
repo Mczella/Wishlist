@@ -13,9 +13,15 @@ import {
     Box,
     Text,
     FormErrorMessage,
+    useDisclosure,
+    AlertDialogOverlay,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogCloseButton,
+    AlertDialogBody, AlertDialogFooter, AlertDialog,
 } from '@chakra-ui/react';
-import React, {useContext, useState} from "react"
-import {signInWithEmailAndPassword} from "firebase/auth"
+import React, {useContext, useRef, useState} from "react"
+import {signInWithEmailAndPassword, sendPasswordResetEmail} from "firebase/auth"
 import {auth} from "./firebase"
 import {useNavigate} from "react-router-dom"
 import {AuthorizationContext} from "./AuthorizationContext"
@@ -30,8 +36,10 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false)
     const navigate = useNavigate()
     const {dispatch, rememberMe, setRememberMe} = useContext(AuthorizationContext)
+    const {isOpen, onOpen, onClose} = useDisclosure()
+    const cancelRef = useRef()
+    const [resetEmail, setResetEmail] = useState("")
 
-    // add forgot password link
 
     const handleLogin = async (e) => {
         e.preventDefault()
@@ -53,6 +61,16 @@ const Login = () => {
             console.log(error)
         }
     }
+
+    const handlePasswordResetEmail = async (email) => {
+        try {
+            await sendPasswordResetEmail(auth, email);
+            console.log("Password reset email sent.");
+        } catch (error) {
+            console.error("Error sending password reset email:", error);
+        }
+    };
+
     return (
         <Flex
             minH={'100vh'}
@@ -117,7 +135,40 @@ const Login = () => {
                                     >
                                         Zapamatujte si mě.
                                     </Checkbox>
-                                    <Link color={'blue.500'}>Zapomněli jste heslo?</Link>
+                                    <Link color={'blue.500'}
+                                          onClick={onOpen}
+                                    >
+                                        Zapomněli jste heslo?
+                                    </Link>
+                                    <AlertDialog
+                                        motionPreset='slideInBottom'
+                                        leastDestructiveRef={cancelRef}
+                                        onClose={onClose}
+                                        isOpen={isOpen}
+                                        isCentered
+                                    >
+                                        <AlertDialogOverlay/>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>Zadejte e-mail</AlertDialogHeader>
+                                            <AlertDialogCloseButton/>
+                                            <form onSubmit={() => handlePasswordResetEmail(resetEmail)}>
+                                            <AlertDialogBody>
+                                                <FormControl id="email">
+                                                    <FormLabel>E-mail</FormLabel>
+                                                    <Input
+                                                        type="email"
+                                                        onChange={(e) => setResetEmail(e.target.value)}
+                                                    />
+                                                </FormControl>
+                                            </AlertDialogBody>
+                                            <AlertDialogFooter>
+                                                <PrimaryButton type="submit">
+                                                    Odeslat
+                                                </PrimaryButton>
+                                            </AlertDialogFooter>
+                                            </form>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
                                 </Stack>
                                 <Stack spacing={2} pt={2}>
                                     <PrimaryButton type="submit">
