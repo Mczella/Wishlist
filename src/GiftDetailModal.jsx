@@ -54,7 +54,7 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
 
     const formatUser = (user) => {
         if (user == null) {
-            return "loading"
+            return "Uživatel není dostupný."
         }
         return `${user.name} ${user.surname}`
     }

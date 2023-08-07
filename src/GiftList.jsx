@@ -62,7 +62,7 @@ const GiftList = ({gifts, users, isLoaded}) => {
 
     const formatUser = (user) => {
         if (user == null) {
-            return "loading"
+            return "Uživatel není dostupný."
         }
         return `${user.name} ${user.surname}`
     }
