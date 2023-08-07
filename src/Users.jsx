@@ -225,7 +225,7 @@ const Users = () => {
                                                     Smazat
                                                 </SecondaryButton>
                                             </ButtonGroup>
-                                                <AlertPopup onClose={() => setOpenedPopup(null)} isOpen={openedPopup === user.id}
+                                                <AlertPopup onAlertClose={() => setOpenedPopup(null)} isAlertOpen={openedPopup === user.id}
                                                             cancelRef={cancelRef} onDelete={() => onDelete(user)}/>
                                             </Td>
                                         </Tr>)

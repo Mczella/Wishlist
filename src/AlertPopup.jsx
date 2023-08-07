@@ -8,14 +8,14 @@ import {
 } from "@chakra-ui/react"
 
 
-const AlertPopup = ({isOpen, onClose, cancelRef, onDelete}) => {
+const AlertPopup = ({isAlertOpen, onAlertClose, cancelRef, onDelete}) => {
     return (
 
         <AlertDialog
             motionPreset='slideInBottom'
             leastDestructiveRef={cancelRef}
-            onClose={onClose}
-            isOpen={isOpen}
+            onClose={onAlertClose}
+            isOpen={isAlertOpen}
             isCentered
         >
             <AlertDialogOverlay/>
@@ -34,7 +34,7 @@ const AlertPopup = ({isOpen, onClose, cancelRef, onDelete}) => {
                             onClick={onDelete}>
                         Ano
                     </Button>
-                    <Button variant='outline' colorScheme='red' ml={3} ref={cancelRef} onClick={onClose}>
+                    <Button variant='outline' colorScheme='red' ml={3} ref={cancelRef} onClick={onAlertClose}>
                         Ne
                     </Button>
                 </AlertDialogFooter>
