@@ -99,7 +99,7 @@ const GiftDetailModal = ({gift, btnRef, user, users, onClose, isOpen, handleEdit
                                     objectFit='contain'
                                     boxSize='200px'
                                     display='initial'
-                                    src={gift.imageUrl || "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="}
+                                    src={gift.imageUrl || "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-7.jpg"}
                                     alt={gift.imageUrl ? gift.name : "thumbnail"}
                                 />
                             </Center>
