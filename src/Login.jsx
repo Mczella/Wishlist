@@ -135,7 +135,7 @@ const Login = () => {
                                     >
                                         Zapamatujte si mě.
                                     </Checkbox>
-                                    <Link color={'blue.500'}
+                                    <Link color={'orange.500'}
                                           onClick={onOpen}
                                     >
                                         Zapomněli jste heslo?
