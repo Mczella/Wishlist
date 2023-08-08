@@ -1,8 +1,10 @@
 
 # Wishlist
 
+Currently deployed at https://mcz-christmas.web.app/.
+
 Wishlist is a React project built with Firebase and Chakra UI, designed to simplify the process of creating gift registries. It provides users with the ability to create, manage, and reserve gifts, as well as manage user accounts.  
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).  
 
 ## Features
 
