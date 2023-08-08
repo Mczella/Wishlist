@@ -37,16 +37,20 @@ import {
 import AlertPopup from "./AlertPopup";
 import {CloseIcon} from "@chakra-ui/icons";
 import {SecondaryButton} from "./styles/Buttons";
+import AlertGiftChange from "./AlertGiftChange";
 
 
 const Users = () => {
     const [users, setUsers] = useState([])
+    const [gifts, setGifts] = useState([])
+    const [changedGifts, setChangedGifts] = useState(0)
+    const [deletedGifts, setDeletedGifts] = useState(0)
     const [editMode, setEditMode] = useState({})
     const [values, setValues] = useState({})
     const currentUID = useContext(AuthorizationContext).currentUser.uid
     const {isOpen: isCredentialsOpen, onOpen: onCredentialsOpen, onClose: onCredentialsClose} = useDisclosure()
     const cancelRef = useRef()
-    const [openedPopup, setOpenedPopup] = useState(null)
+    const [openedAlert, setOpenedAlert] = useState(null)
 
 
     const handleChange = (e) => {
@@ -72,12 +76,16 @@ const Users = () => {
     useEffect(() => {
         const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
             setUsers(snapshot.docs.map((doc) => ({...doc.data(), id: doc.id})))
-            console.log("hello")
         })
         return () => unsubscribe()
     }, [setUsers])
 
-    console.log(users)
+    useEffect(() => {
+        const unsubscribe = onSnapshot(collection(db, "Gifts"), (snapshot) => {
+            setGifts(snapshot.docs.map((doc) => ({...doc.data(), id: doc.id})))
+        })
+        return () => unsubscribe()
+    }, [setGifts])
 
     const handleEditClick = (itemId) => {
         setEditMode((prevEditMode) => ({
@@ -95,17 +103,50 @@ const Users = () => {
         try {
             const userAuth = auth.currentUser
             await deleteUser(userAuth)
-        } catch(error) {
+        } catch (error) {
             console.log(error)
         }
     }
 
-    const onDelete = async (user) => {
-        //remove user from gifts - if user is the only recipient, remove gift
-        //add reauthentication prompt if user has been signed in too long
+    const checkGiftsForUser = (user) => {
+        gifts.map(async (gift) => {
+                if (gift.recipient.includes(user.id)) {
+                    if (gift.recipient.length === 1) {
+                        setDeletedGifts((deletedGifts) => deletedGifts + 1)
+                    } else {
+                        setChangedGifts((changedGifts) => changedGifts + 1)
+                    }
+                }
+            }
+        )
+    }
+
+    const confirmDelete = async (user) => {
+        gifts.map(async (gift) => {
+                if (gift.recipient.includes(user.id)) {
+                    if (gift.recipient.length === 1) {
+                        await handleDelete(gift.id, "Gifts")
+                        setDeletedGifts(0)
+                    } else {
+                        const index = gift.recipient.indexOf(user.id)
+                        gift.recipient.splice(index, 1)
+                        await handleEdit(gift.id, "Gifts", {
+                            recipient: gift.recipient
+                        })
+                        setChangedGifts(0)
+                    }
+                }
+            }
+        )
         await handleDelete(user.id, "users")
         await removeUser()
     }
+    const onDelete = (user) => {
+        checkGiftsForUser(user)
+        setOpenedAlert(user.id)
+        //add reauthentication prompt if user has been signed in too long
+    }
+
 
     return (
         <>
@@ -192,44 +233,53 @@ const Users = () => {
                                                 user.admin ? "Ano" : "Ne"
                                             )}</Td>
                                             <Td textAlign={'right'}>
-                                            <ButtonGroup>
-                                                <ButtonGroup
-                                                    isAttached variant='outline'
-                                                >
-                                                    {editMode[user.id] ? (
-                                                        <>
-                                                            <SecondaryButton onClick={() => {
-                                                                        handleEdit(user.id, "users", values)
-                                                                        handleEditClick(user.id)
-                                                                    }}>Uložit
-                                                            </SecondaryButton>
-                                                            <IconButton aria-label='Zrušit'
-                                                                        rounded={'lg'}
-                                                                        colorScheme={'orange'}
-                                                                        _hover={{textColor: 'orange.500'}}
-                                                                        onClick={() => {
-                                                                            handleEditClick(user.id)
-                                                                        }}
-                                                                        icon={<CloseIcon/>}/>
-                                                        </>
-                                                    ) : (
-                                                        <SecondaryButton
+                                                <ButtonGroup>
+                                                    <ButtonGroup
+                                                        isAttached variant='outline'
+                                                    >
+                                                        {editMode[user.id] ? (
+                                                            <>
+                                                                <SecondaryButton onClick={() => {
+                                                                    handleEdit(user.id, "users", values)
+                                                                    handleEditClick(user.id)
+                                                                }}>Uložit
+                                                                </SecondaryButton>
+                                                                <IconButton aria-label='Zrušit'
+                                                                            rounded={'lg'}
+                                                                            colorScheme={'orange'}
+                                                                            _hover={{textColor: 'orange.500'}}
+                                                                            onClick={() => {
+                                                                                handleEditClick(user.id)
+                                                                            }}
+                                                                            icon={<CloseIcon/>}/>
+                                                            </>
+                                                        ) : (
+                                                            <SecondaryButton
                                                                 onClick={() => handleEditClick(user.id)}
-                                                        >
-                                                            Upravit
-                                                        </SecondaryButton>
-                                                    )}
-                                                </ButtonGroup>
+                                                            >
+                                                                Upravit
+                                                            </SecondaryButton>
+                                                        )}
+                                                    </ButtonGroup>
 
-                                                <SecondaryButton
-                                                    isDisabled={currentUID !== user.id}
-                                                    mx={'2'}
-                                                    onClick={() => setOpenedPopup(user.id)}>
-                                                    Smazat
-                                                </SecondaryButton>
-                                            </ButtonGroup>
-                                                <AlertPopup onAlertClose={() => setOpenedPopup(null)} isAlertOpen={openedPopup === user.id}
-                                                            cancelRef={cancelRef} onDelete={() => onDelete(user)}/>
+                                                    <SecondaryButton
+                                                        isDisabled={currentUID !== user.id}
+                                                        mx={'2'}
+                                                        onClick={() => onDelete(user)}>
+                                                        Smazat
+                                                    </SecondaryButton>
+                                                </ButtonGroup>
+                                                <AlertGiftChange onClose={() => {
+                                                                    setOpenedAlert(null)
+                                                                    setDeletedGifts(0)
+                                                                    setChangedGifts(0)
+                                                                 }}
+                                                                 isOpen={openedAlert === user.id}
+                                                                 cancelRef={cancelRef}
+                                                                 onDelete={() => confirmDelete(user)}
+                                                                 changedGifts={changedGifts}
+                                                                 deletedGifts={deletedGifts}
+                                                                 />
                                             </Td>
                                         </Tr>)
                                     : null
