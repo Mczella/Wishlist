@@ -153,10 +153,10 @@ const Login = () => {
                                             <AlertDialogCloseButton/>
                                             <form onSubmit={() => handlePasswordResetEmail(resetEmail)}>
                                             <AlertDialogBody>
-                                                <FormControl id="email">
+                                                <FormControl id="resetEmail">
                                                     <FormLabel>E-mail</FormLabel>
                                                     <Input
-                                                        type="email"
+                                                        type="resetEmail"
                                                         onChange={(e) => setResetEmail(e.target.value)}
                                                     />
                                                 </FormControl>
