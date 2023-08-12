@@ -9,7 +9,7 @@ import {
     MenuButton,
     Menu,
     HStack,
-    MenuDivider
+    MenuDivider, Text, Center
 } from "@chakra-ui/react";
 import GiftList from "./GiftList";
 
@@ -48,6 +48,7 @@ const Gifts = () => {
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             setGifts(snapshot.docs.map((doc) => ({...doc.data(), id: doc.id})))
+            console.log(gifts)
             setIsLoaded(true)
         })
         return () => unsubscribe()
@@ -115,6 +116,9 @@ const Gifts = () => {
                 </MenuList>
             </Menu>
             </HStack>
+            {gifts.length===0?
+                <Center><Text>Pro váš výběr nebyly nalezeny žádné výsledky.</Text></Center>:null
+            }
             <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(300px, 1fr))'>
                <GiftList gifts={gifts} users={users} isLoaded={isLoaded}/>
             </SimpleGrid>
