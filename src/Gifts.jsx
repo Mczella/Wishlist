@@ -48,7 +48,6 @@ const Gifts = () => {
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             setGifts(snapshot.docs.map((doc) => ({...doc.data(), id: doc.id})))
-            console.log(gifts)
             setIsLoaded(true)
         })
         return () => unsubscribe()
@@ -67,60 +66,60 @@ const Gifts = () => {
     return (
         <>
             <HStack justifyContent={'flex-end'}>
-            <Menu closeOnSelect={false}>
-                <MenuButton
-                    px={4}
-                    py={2}
-                    transition='all 0.2s'
-                    borderRadius='md'
-                    borderWidth='1px'
-                    _hover={{ bg: 'gray.200' }}
-                    _expanded={{ bg: 'gray.200' }}
-                    _focus={{ boxShadow: 'outline' }}
-                >
-                    Filtrovat
-                </MenuButton>
-                <MenuList minWidth='240px'>
-                    <MenuOptionGroup onChange={(e) => setFilter(e)} title='Filtrovat' type='radio'>
-                        <MenuItemOption value='buyer'>Dle kupce</MenuItemOption>
-                        <MenuItemOption value='creator'>Dle zadavatele</MenuItemOption>
-                        <MenuItemOption value='recipient'>Dle obdarovávaného</MenuItemOption>
-                    </MenuOptionGroup>
-                    <MenuDivider />
-                    <MenuOptionGroup onChange={(e) => setChooseUser(e)} title='Uživatel' type='checkbox'>
-                        {users.map((user) => (
-                            <MenuItemOption key={user.id} value={user.id}>
-                                {user.name} {user.surname}
-                            </MenuItemOption>))}
-                    </MenuOptionGroup>
-                </MenuList>
-            </Menu>
-            <Menu>
-                <MenuButton
-                    px={4}
-                    py={2}
-                    transition='all 0.2s'
-                    borderRadius='md'
-                    borderWidth='1px'
-                    _hover={{bg: 'gray.200'}}
-                    _expanded={{bg: 'grey.200'}}
-                    _focus={{boxShadow: 'outline'}}
-                >
-                    Seřadit
-                </MenuButton>
-                <MenuList minWidth='240px'>
-                    <MenuOptionGroup onChange={(e) => setOrder(e)} title='Seřadit' type='radio'>
-                        <MenuItemOption value='asc'>Dle názvu vzestupně</MenuItemOption>
-                        <MenuItemOption value='desc'>Dle názvu sestupně</MenuItemOption>
-                    </MenuOptionGroup>
-                </MenuList>
-            </Menu>
+                <Menu closeOnSelect={false}>
+                    <MenuButton
+                        px={4}
+                        py={2}
+                        transition='all 0.2s'
+                        borderRadius='md'
+                        borderWidth='1px'
+                        _hover={{bg: 'gray.200'}}
+                        _expanded={{bg: 'gray.200'}}
+                        _focus={{boxShadow: 'outline'}}
+                    >
+                        Filtrovat
+                    </MenuButton>
+                    <MenuList minWidth='240px'>
+                        <MenuOptionGroup onChange={(e) => setFilter(e)} title='Filtrovat' type='radio'>
+                            <MenuItemOption value='buyer'>Dle kupce</MenuItemOption>
+                            <MenuItemOption value='creator'>Dle zadavatele</MenuItemOption>
+                            <MenuItemOption value='recipient'>Dle obdarovávaného</MenuItemOption>
+                        </MenuOptionGroup>
+                        <MenuDivider/>
+                        <MenuOptionGroup onChange={(e) => setChooseUser(e)} title='Uživatel' type='checkbox'>
+                            {users.map((user) => (
+                                <MenuItemOption key={user.id} value={user.id}>
+                                    {user.name} {user.surname}
+                                </MenuItemOption>))}
+                        </MenuOptionGroup>
+                    </MenuList>
+                </Menu>
+                <Menu>
+                    <MenuButton
+                        px={4}
+                        py={2}
+                        transition='all 0.2s'
+                        borderRadius='md'
+                        borderWidth='1px'
+                        _hover={{bg: 'gray.200'}}
+                        _expanded={{bg: 'grey.200'}}
+                        _focus={{boxShadow: 'outline'}}
+                    >
+                        Seřadit
+                    </MenuButton>
+                    <MenuList minWidth='240px'>
+                        <MenuOptionGroup onChange={(e) => setOrder(e)} title='Seřadit' type='radio'>
+                            <MenuItemOption value='asc'>Dle názvu vzestupně</MenuItemOption>
+                            <MenuItemOption value='desc'>Dle názvu sestupně</MenuItemOption>
+                        </MenuOptionGroup>
+                    </MenuList>
+                </Menu>
             </HStack>
-            {gifts.length===0?
-                <Center><Text>Pro váš výběr nebyly nalezeny žádné výsledky.</Text></Center>:null
+            {gifts.length === 0 ?
+                <Center><Text>Pro váš výběr nebyly nalezeny žádné výsledky.</Text></Center> : null
             }
             <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(300px, 1fr))'>
-               <GiftList gifts={gifts} users={users} isLoaded={isLoaded}/>
+                <GiftList gifts={gifts} users={users} isLoaded={isLoaded}/>
             </SimpleGrid>
         </>
     )
