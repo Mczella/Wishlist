@@ -1,4 +1,4 @@
-import {onSnapshot, collection, query, where, orderBy} from "firebase/firestore"
+import {onSnapshot, collection, query, orderBy} from "firebase/firestore"
 import React, {useEffect, useState} from "react"
 import {db} from "./firebase"
 import {
@@ -18,10 +18,11 @@ const Gifts = () => {
     const [gifts, setGifts] = useState([])
     const [users, setUsers] = useState([])
     const [isLoaded, setIsLoaded] = useState(false)
+    const [order, setOrder] = useState(null)
 
 
     useEffect(() => {
-        const q = query(collection(db, "Gifts"));
+        const q = query(collection(db, "Gifts"), orderBy("buyer"))
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             setGifts(snapshot.docs.map((doc) => ({...doc.data(), id: doc.id})))
@@ -39,8 +40,6 @@ const Gifts = () => {
 
         return () => unsubscribe()
     }, [setUsers])
-
-
 
 
     return (
@@ -88,7 +87,7 @@ const Gifts = () => {
                     Seřadit
                 </MenuButton>
                 <MenuList minWidth='240px'>
-                    <MenuOptionGroup defaultValue='asc' title='Seřadit' type='radio'>
+                    <MenuOptionGroup  defaultValue='asc' title='Seřadit' type='radio'>
                         <MenuItemOption value='asc'>Dle názvu vzestupně</MenuItemOption>
                         <MenuItemOption value='desc'>Dle názvu sestupně</MenuItemOption>
                     </MenuOptionGroup>
