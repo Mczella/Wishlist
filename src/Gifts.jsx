@@ -32,7 +32,7 @@ const Gifts = () => {
             constraints.push(orderBy("name", "desc"))
         }
 
-        if (filter && chooseUser) {
+        if (filter && chooseUser && chooseUser.length !== 0) {
             if (filter === "buyer") {
                 constraints.push(where("buyer", "in", chooseUser))
             }
