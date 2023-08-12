@@ -39,6 +39,8 @@ const Login = () => {
     const {isOpen, onOpen, onClose} = useDisclosure()
     const cancelRef = useRef()
     const [resetEmail, setResetEmail] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
+    const [resetPasswordError, setResetPasswordError] = useState(false)
 
 
     const handleLogin = async (e) => {
@@ -63,12 +65,20 @@ const Login = () => {
     }
 
     const handlePasswordResetEmail = async (email) => {
+        setIsLoading(true)
         try {
             await sendPasswordResetEmail(auth, email);
             console.log("Password reset email sent.");
         } catch (error) {
+            setResetPasswordError(true)
             console.error("Error sending password reset email:", error);
+        } finally {
+            setIsLoading(false)
+            if (!resetPasswordError) {
+                onClose()
         }
+    }
+
     };
 
     return (
@@ -140,35 +150,6 @@ const Login = () => {
                                     >
                                         Zapomněli jste heslo?
                                     </Link>
-                                    <AlertDialog
-                                        motionPreset='slideInBottom'
-                                        leastDestructiveRef={cancelRef}
-                                        onClose={onClose}
-                                        isOpen={isOpen}
-                                        isCentered
-                                    >
-                                        <AlertDialogOverlay/>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>Zadejte e-mail</AlertDialogHeader>
-                                            <AlertDialogCloseButton/>
-                                            <form onSubmit={() => handlePasswordResetEmail(resetEmail)}>
-                                            <AlertDialogBody>
-                                                <FormControl id="resetEmail">
-                                                    <FormLabel>E-mail</FormLabel>
-                                                    <Input
-                                                        type="resetEmail"
-                                                        onChange={(e) => setResetEmail(e.target.value)}
-                                                    />
-                                                </FormControl>
-                                            </AlertDialogBody>
-                                            <AlertDialogFooter>
-                                                <PrimaryButton type="submit">
-                                                    Odeslat
-                                                </PrimaryButton>
-                                            </AlertDialogFooter>
-                                            </form>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
                                 </Stack>
                                 <Stack spacing={2} pt={2}>
                                     <PrimaryButton type="submit">
@@ -179,6 +160,36 @@ const Login = () => {
                             </Stack>
                         </Stack>
                     </form>
+                    <AlertDialog
+                        motionPreset='slideInBottom'
+                        leastDestructiveRef={cancelRef}
+                        onClose={onClose}
+                        isOpen={isOpen}
+                        isCentered
+                    >
+                        <AlertDialogOverlay/>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>Zadejte e-mail</AlertDialogHeader>
+                            <AlertDialogCloseButton/>
+                            <form onSubmit={() => handlePasswordResetEmail(resetEmail)}>
+                                <AlertDialogBody>
+                                    <FormControl id="resetEmail">
+                                        <FormLabel>E-mail</FormLabel>
+                                        <Input
+                                            type="email"
+                                            name="resetEmail"
+                                            onChange={(e) => setResetEmail(e.target.value)}
+                                        />
+                                    </FormControl>
+                                </AlertDialogBody>
+                                <AlertDialogFooter>
+                                    <PrimaryButton type="submit" isLoading={isLoading}>
+                                        Odeslat
+                                    </PrimaryButton>
+                                </AlertDialogFooter>
+                            </form>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </Box>
             </Stack>
         </Flex>
