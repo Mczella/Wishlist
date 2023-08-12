@@ -22,15 +22,22 @@ const Gifts = () => {
 
 
     useEffect(() => {
-        const q = query(collection(db, "Gifts"), orderBy("buyer"))
+        const constraints = []
+
+        if (order && order === "asc") {
+            constraints.push(orderBy("name"))
+        } else if (order && order === "desc") {
+            constraints.push(orderBy("name", "desc"))
+        }
+
+        const q = query(collection(db, "Gifts"), orderBy("buyer"), ...constraints)
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             setGifts(snapshot.docs.map((doc) => ({...doc.data(), id: doc.id})))
             setIsLoaded(true)
         })
         return () => unsubscribe()
-    }, [setGifts])
-
+    }, [order, setGifts])
 
 
     useEffect(() => {
@@ -87,7 +94,7 @@ const Gifts = () => {
                     Seřadit
                 </MenuButton>
                 <MenuList minWidth='240px'>
-                    <MenuOptionGroup  defaultValue='asc' title='Seřadit' type='radio'>
+                    <MenuOptionGroup onChange={(e) => setOrder(e)} title='Seřadit' type='radio'>
                         <MenuItemOption value='asc'>Dle názvu vzestupně</MenuItemOption>
                         <MenuItemOption value='desc'>Dle názvu sestupně</MenuItemOption>
                     </MenuOptionGroup>
