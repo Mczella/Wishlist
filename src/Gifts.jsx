@@ -1,4 +1,4 @@
-import {onSnapshot, collection, query, orderBy} from "firebase/firestore"
+import {onSnapshot, collection, query, orderBy, where} from "firebase/firestore"
 import React, {useEffect, useState} from "react"
 import {db} from "./firebase"
 import {
@@ -19,6 +19,8 @@ const Gifts = () => {
     const [users, setUsers] = useState([])
     const [isLoaded, setIsLoaded] = useState(false)
     const [order, setOrder] = useState(null)
+    const [filter, setFilter] = useState(null)
+    const [chooseUser, setChooseUser] = useState(null)
 
 
     useEffect(() => {
@@ -30,6 +32,18 @@ const Gifts = () => {
             constraints.push(orderBy("name", "desc"))
         }
 
+        if (filter && chooseUser) {
+            if (filter === "buyer") {
+                constraints.push(where("buyer", "in", chooseUser))
+            }
+            if (filter === "recipient") {
+                constraints.push(where("recipient", "array-contains-any", chooseUser))
+            }
+            if (filter === "creator") {
+                constraints.push(where("creator", "in", chooseUser))
+            }
+        }
+
         const q = query(collection(db, "Gifts"), orderBy("buyer"), ...constraints)
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -37,7 +51,7 @@ const Gifts = () => {
             setIsLoaded(true)
         })
         return () => unsubscribe()
-    }, [order, setGifts])
+    }, [chooseUser, filter, order, setGifts])
 
 
     useEffect(() => {
@@ -66,13 +80,13 @@ const Gifts = () => {
                     Filtrovat
                 </MenuButton>
                 <MenuList minWidth='240px'>
-                    <MenuOptionGroup defaultValue='asc' title='Filtrovat' type='radio'>
+                    <MenuOptionGroup onChange={(e) => setFilter(e)} title='Filtrovat' type='radio'>
                         <MenuItemOption value='buyer'>Dle kupce</MenuItemOption>
                         <MenuItemOption value='creator'>Dle zadavatele</MenuItemOption>
                         <MenuItemOption value='recipient'>Dle obdarovávaného</MenuItemOption>
                     </MenuOptionGroup>
                     <MenuDivider />
-                    <MenuOptionGroup title='Uživatel' type='checkbox'>
+                    <MenuOptionGroup onChange={(e) => setChooseUser(e)} title='Uživatel' type='checkbox'>
                         {users.map((user) => (
                             <MenuItemOption key={user.id} value={user.id}>
                                 {user.name} {user.surname}
