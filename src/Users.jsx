@@ -34,10 +34,10 @@ import {
     IconButton,
     Box
 } from "@chakra-ui/react";
-import AlertPopup from "./AlertPopup";
 import {CloseIcon} from "@chakra-ui/icons";
 import {SecondaryButton} from "./styles/Buttons";
 import AlertGiftChange from "./AlertGiftChange";
+import {useNavigate} from "react-router-dom";
 
 
 const Users = () => {
@@ -51,6 +51,7 @@ const Users = () => {
     const {isOpen: isCredentialsOpen, onOpen: onCredentialsOpen, onClose: onCredentialsClose} = useDisclosure()
     const cancelRef = useRef()
     const [openedAlert, setOpenedAlert] = useState(null)
+    const navigate = useNavigate()
 
 
     const handleChange = (e) => {
@@ -140,6 +141,7 @@ const Users = () => {
         )
         await handleDelete(user.id, "users")
         await removeUser()
+        navigate("/")
     }
     const onDelete = (user) => {
         checkGiftsForUser(user)
@@ -223,6 +225,7 @@ const Users = () => {
                                             <Td>{user.email}</Td>
                                             <Td>{editMode[user.id] ? (
                                                 <Select
+                                                    isDisabled={!isAdmin()}
                                                     name="admin"
                                                     defaultValue={user.admin ? "true" : "false"}
                                                     onChange={handleSelect}>
