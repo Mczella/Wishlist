@@ -37,6 +37,7 @@ export default function WelcomePage() {
                         Přihlaste se
                     </PrimaryButton>
                     <Button
+                        isDisabled={true}
                         rounded={'lg'}
                         px={6}
                         onClick={() => {navigate("/signup")}}>
