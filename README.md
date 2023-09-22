@@ -9,7 +9,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Features
 
 - User authentication: Create an account with email, password, and name.
-- A dummy account (e-mail: `user@user.user`, password: `user1234`) is available for testing.
 - Gift Management: Create, read, edit, and delete gifts.
 - User Management: Manage users, including authentication and access control.
 
